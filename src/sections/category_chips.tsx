@@ -6,27 +6,26 @@ import Resources from "@/Config/Resources";
 
 // Components
 import { Button } from "@/components/ui/button";
-export default function SECTION_Category_Chips(){
-    const [searchParams] = useSearchParams();
+export default function SECTION_Category_Chips() {
+  const [searchParams] = useSearchParams();
 
-    const activeCategory = searchParams.get("category") || "";
+  const activeCategory = searchParams.get("category") || "";
 
+  const handleCategoryClick = (tag: string) => {
+    const params = new URLSearchParams(searchParams);
 
-    const handleCategoryClick = (tag: string) => {
-        const params = new URLSearchParams(searchParams);
-    
-        if (activeCategory === tag) {
-          params.delete("category");
-        } else {
-          params.set("category", tag);
-        }
-    
-        const queryString = params.toString();
-        window.location.href = `/browse?${queryString}`;
-      };
+    if (activeCategory === tag) {
+      params.delete("category");
+    } else {
+      params.set("category", tag);
+    }
 
-    return (
-        <div className="mt-4 flex flex-wrap gap-2">
+    const queryString = params.toString();
+    window.location.href = `/browse?${queryString}`;
+  };
+
+  return (
+    <div className="mt-4 flex flex-wrap gap-2">
       {Resources.CATEGORIES.map((tag) => (
         <Button
           key={tag}
@@ -40,5 +39,5 @@ export default function SECTION_Category_Chips(){
         </Button>
       ))}
     </div>
-    )
+  );
 }

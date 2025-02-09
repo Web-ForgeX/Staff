@@ -1,3 +1,3 @@
 export default {
-    CATEGORIES: ["Minecraft", "Roblox", "FiveM", "Websites"]
-}
+  CATEGORIES: ["Minecraft", "Roblox", "FiveM", "Websites"],
+};

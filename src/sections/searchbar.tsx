@@ -1,14 +1,13 @@
 // Components
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Search } from "lucide-react"
+import { Search } from "lucide-react";
 
 // Components
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-export default function SECTION_SearchBar(){
-
-    const [searchQuery, setSearchQuery] = useState("");
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+export default function SECTION_SearchBar() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -34,9 +33,8 @@ export default function SECTION_SearchBar(){
     navigate(`/browse?${params.toString()}`);
   };
 
-
-    return (
-        <div className="flex gap-2">
+  return (
+    <div className="flex gap-2">
       <Input
         type="search"
         placeholder="Search for resources..."
@@ -49,5 +47,5 @@ export default function SECTION_SearchBar(){
         Search
       </Button>
     </div>
-    )
+  );
 }

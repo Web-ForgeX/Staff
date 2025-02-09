@@ -1,9 +1,5 @@
 // Packages
-import {
-    BrowserRouter as PKRouter,
-    Route,
-    Routes,
-  } from "react-router-dom";
+import { BrowserRouter as PKRouter, Route, Routes } from "react-router-dom";
 
 // Components
 import Layout from "@/layout";
@@ -14,14 +10,14 @@ import Layout from "@/layout";
 import HomePage from "@/pages/home";
 
 export default function Router() {
-    return (
-        <PKRouter>
-            <Layout>
-            <Routes>
-                    {/* Public Routes */}
-                    <Route path="/" element={<HomePage />} />
-                </Routes>
-            </Layout>
-        </PKRouter>
-    )
+  return (
+    <PKRouter>
+      <Layout>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </Layout>
+    </PKRouter>
+  );
 }
