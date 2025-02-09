@@ -55,7 +55,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen">
       <HOME_Hero />
-      <section className="py-12 pb-24 bg-gray-50">
+      <section className="py-12 pb-24">
         <SECTION_Resource_Card_Grid
           resources={sampleResources}
           per_row={4}
