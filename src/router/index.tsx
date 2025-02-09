@@ -9,6 +9,9 @@ import Layout from "@/layout";
 // Pages
 import HomePage from "@/pages/home";
 
+// User Pages
+import User_Settings from "@/pages/user/settings";
+
 export default function Router() {
   return (
     <PKRouter>
@@ -16,6 +19,9 @@ export default function Router() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
+
+          {/* User Routes */}
+          <Route path="/user/settings" element={<User_Settings />} />
         </Routes>
       </Layout>
     </PKRouter>

@@ -34,7 +34,7 @@ export default function SECTION_Nav_Profile() {
       </Button>
       <Button
         variant="ghost"
-        onClick={() => (window.location.href = `/content`)}
+        onClick={() => (window.location.href = `/user/content`)}
         size="icon"
         className="p-1"
       >
@@ -43,14 +43,14 @@ export default function SECTION_Nav_Profile() {
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => (window.location.href = `/stores`)}
+        onClick={() => (window.location.href = `/user/stores`)}
         className="p-1"
       >
         <Store className="w-5 h-5" />
       </Button>
       <Button
         variant="ghost"
-        onClick={() => (window.location.href = `/settings`)}
+        onClick={() => (window.location.href = `/user/settings`)}
         size="icon"
         className="p-1"
       >

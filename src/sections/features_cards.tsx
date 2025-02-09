@@ -45,12 +45,12 @@ export default function SECTION_Features_Cards() {
   ];
 
   return (
-    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-primary">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold mb-2">
+        <h2 className="text-2xl font-bold mb-2 text-primary-foreground">
           Powerful Features for Your Store
         </h2>
-        <p className="text-foreground/40 text-sm max-w-2xl mx-auto">
+        <p className="text-primary-foreground/40 text-sm max-w-2xl mx-auto">
           Everything you need to create, manage, and grow your digital
           marketplace.
         </p>
