@@ -11,6 +11,8 @@ import HomePage from "@/pages/home";
 
 // User Pages
 import User_Settings from "@/pages/user/settings";
+import User_Stores from "@/pages/user/stores";
+import User_Content from "@/pages/user/content";
 
 export default function Router() {
   return (
@@ -22,6 +24,8 @@ export default function Router() {
 
           {/* User Routes */}
           <Route path="/user/settings" element={<User_Settings />} />
+          <Route path="/user/stores" element={<User_Stores />} />
+          <Route path="/user/content" element={<User_Content />} />
         </Routes>
       </Layout>
     </PKRouter>
