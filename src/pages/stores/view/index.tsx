@@ -56,11 +56,14 @@ export default function Store_View() {
 
   return (
     <div>
-      <STORE_VIEW_Store_Info />
+      {/* Full width banner */}
+      <div className="w-full">
+        <STORE_VIEW_Store_Info />
+      </div>
 
-      <div className=" mt-4 mx-20 pb-10">
-        <Tabs defaultValue="resources" className="">
-          <TabsList className="gap-5">
+      <div className="mt-4 mx-8 md:mx-20 pb-10">
+        <Tabs defaultValue="resources">
+          <TabsList className="flex justify-center md:justify-start">
             <TabsTrigger value="resources">
               <Package /> Resources
             </TabsTrigger>
@@ -74,18 +77,20 @@ export default function Store_View() {
             )}
           </TabsList>
 
-          <TabsContent value="resources" className="mt-4 -ml-8">
-            <SECTION_Resource_Card_Grid
-              resources={sampleResources}
-              showViewAll={false}
-              title="Sample Store Resources"
-            />
+          <TabsContent value="resources" className="mt-4">
+            <div className="max-w-[95%] md:max-w-full mx-auto">
+              <SECTION_Resource_Card_Grid
+                resources={sampleResources}
+                showViewAll={false}
+                title="Sample Store Resources"
+              />
+            </div>
           </TabsContent>
-          <TabsContent value="members">
+          <TabsContent value="members" className="text-center">
             <p>Members content goes here.</p>
           </TabsContent>
           {owner && (
-            <TabsContent value="settings">
+            <TabsContent value="settings" className="text-center">
               <p>Settings content goes here.</p>
             </TabsContent>
           )}
