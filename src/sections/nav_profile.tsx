@@ -1,13 +1,20 @@
 import { Mail, Folder, Store, Settings } from "lucide-react";
+import VerifiedBadge from "@/components/ui/verified";
 
 import { Button } from "@/components/ui/button";
 import URLS from "@/Config/URLS";
 
 // Hooks
 import { useInbox } from "@/hooks/inbox";
+
 export default function SECTION_Nav_Profile() {
   const unreadCount = 3;
+  const verified = true;
   const { toggleInboxPopup } = useInbox();
+
+  const navigateTo = (path: string) => () => {
+    window.location.href = path;
+  };
 
   return (
     <div className="flex items-center space-x-3 bg-secondary px-3 h-12 py-1 rounded-lg">
@@ -17,7 +24,10 @@ export default function SECTION_Nav_Profile() {
           alt="User Avatar"
           className="w-6 h-6 rounded-full"
         />
-        <span className="text-sm font-medium">Char</span>
+        <div className="flex items-center space-x-1">
+          <span className="text-sm font-medium">Char</span>
+          {verified && <VerifiedBadge className="w-3" />}
+        </div>
       </div>
       <div className="border-r border-black/10 mx-2 h-6" />
       <Button
@@ -35,7 +45,7 @@ export default function SECTION_Nav_Profile() {
       </Button>
       <Button
         variant="ghost"
-        onClick={() => (window.location.href = `/user/content`)}
+        onClick={navigateTo("/user/content")}
         size="icon"
         className="p-1"
       >
@@ -44,14 +54,14 @@ export default function SECTION_Nav_Profile() {
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => (window.location.href = `/user/stores`)}
+        onClick={navigateTo("/user/stores")}
         className="p-1"
       >
         <Store className="w-5 h-5" />
       </Button>
       <Button
         variant="ghost"
-        onClick={() => (window.location.href = `/user/settings`)}
+        onClick={navigateTo("/user/settings")}
         size="icon"
         className="p-1"
       >
