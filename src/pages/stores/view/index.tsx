@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import STORE_VIEW_Store_Info from "./sections/store_info";
 import STORE_VIEW_Store_Members from "./sections/store_members";
 import { Package, Users, Settings } from "lucide-react";
@@ -54,6 +56,19 @@ import SECTION_Resource_Card_Grid from "@/sections/resource_card_grid";
 
 export default function Store_View() {
   const owner = true;
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState("resources");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabFromUrl = params.get("tab");
+    if (
+      tabFromUrl &&
+      ["resources", "members", "settings"].includes(tabFromUrl)
+    ) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [location.search]);
 
   return (
     <div>
@@ -63,7 +78,7 @@ export default function Store_View() {
       </div>
 
       <div className="mt-4 mx-8 md:mx-20 pb-10">
-        <Tabs defaultValue="resources">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="flex justify-center md:justify-start">
             <TabsTrigger value="resources">
               <Package /> Resources

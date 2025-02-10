@@ -91,7 +91,7 @@ export default function SECTION_Users_Stores({
                       variant="outline"
                       size="icon"
                       onClick={() =>
-                        (window.location.href = `/stores/view/${store.name}`)
+                        (window.location.href = `/stores/view/${store.name}?tab=settings`)
                       }
                     >
                       <Edit className="w-4 h-4" />
