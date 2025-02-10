@@ -82,6 +82,7 @@ export default function Store_View() {
               <SECTION_Resource_Card_Grid
                 resources={sampleResources}
                 showViewAll={false}
+                per_row={4}
                 title="Sample Store Resources"
               />
             </div>
