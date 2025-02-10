@@ -15,6 +15,9 @@ import User_Settings from "@/pages/user/settings";
 import User_Stores from "@/pages/user/stores";
 import User_Content from "@/pages/user/content";
 
+// Store Pages
+import Store_Create from "@/pages/stores/create";
+
 export default function Router() {
   return (
     <InboxProvider>
@@ -28,6 +31,9 @@ export default function Router() {
             <Route path="/user/settings" element={<User_Settings />} />
             <Route path="/user/stores" element={<User_Stores />} />
             <Route path="/user/content" element={<User_Content />} />
+
+            {/* Store Routes */}
+            <Route path="/stores/create" element={<Store_Create />} />
           </Routes>
         </Layout>
       </PKRouter>
