@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Image } from "lucide-react";
 
-export default function StoreCreate() {
+export default function Store_Create() {
   return (
     <div className="max-w-4xl mx-auto pb-20 pt-20">
       <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">

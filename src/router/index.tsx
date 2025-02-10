@@ -17,6 +17,7 @@ import User_Content from "@/pages/user/content";
 
 // Store Pages
 import Store_Create from "@/pages/stores/create";
+import Store_View from "@/pages/stores/view";
 
 export default function Router() {
   return (
@@ -34,6 +35,7 @@ export default function Router() {
 
             {/* Store Routes */}
             <Route path="/stores/create" element={<Store_Create />} />
+            <Route path="/stores/view/:name" element={<Store_View />} />
           </Routes>
         </Layout>
       </PKRouter>
