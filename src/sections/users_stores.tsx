@@ -87,7 +87,13 @@ export default function SECTION_Users_Stores({
 
                 {controls ? (
                   <div className="flex gap-2">
-                    <Button variant="outline" size="icon">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        (window.location.href = `/stores/view/${store.name}`)
+                      }
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button variant="destructive" size="icon">
@@ -97,7 +103,12 @@ export default function SECTION_Users_Stores({
                 ) : (
                   <div className="flex gap-2">
                     <Button variant="outline" size="icon">
-                      <Eye className="w-4 h-4" />
+                      <Eye
+                        className="w-4 h-4"
+                        onClick={() =>
+                          (window.location.href = `/stores/view/${store.name}`)
+                        }
+                      />
                     </Button>
                   </div>
                 )}

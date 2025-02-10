@@ -1,4 +1,5 @@
 import STORE_VIEW_Store_Info from "./sections/store_info";
+import STORE_VIEW_Store_Members from "./sections/store_members";
 import { Package, Users, Settings } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -88,7 +89,7 @@ export default function Store_View() {
             </div>
           </TabsContent>
           <TabsContent value="members" className="text-center">
-            <p>Members content goes here.</p>
+            <STORE_VIEW_Store_Members />
           </TabsContent>
           {owner && (
             <TabsContent value="settings" className="text-center">
