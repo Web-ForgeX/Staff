@@ -2,11 +2,12 @@ import { Mail, Folder, Store, Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import URLS from "@/Config/URLS";
+
+// Hooks
+import { useInbox } from "@/hooks/inbox";
 export default function SECTION_Nav_Profile() {
   const unreadCount = 3;
-  const toggleInboxPopup = () => {
-    console.log("INBOX");
-  };
+  const { toggleInboxPopup } = useInbox();
 
   return (
     <div className="flex items-center space-x-3 bg-secondary px-3 h-12 py-1 rounded-lg">
