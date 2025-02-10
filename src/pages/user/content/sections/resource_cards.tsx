@@ -19,10 +19,10 @@ export default function USER_CONTENT_Resource_Cards({
         {purchasedContent.map((item) => (
           <div
             key={item.id}
-            className="bg-muted rounded-xl border p-4 flex items-center shadow-sm"
+            className="bg-muted rounded-xl border p-4 flex flex-col md:flex-row items-center md:items-stretch shadow-sm"
           >
             {/* Item Image */}
-            <div className="w-44 h-24 rounded-lg overflow-hidden">
+            <div className="w-full md:w-44 h-32 md:h-24 rounded-lg overflow-hidden">
               <img
                 src={item.image}
                 alt={item.name}
@@ -31,7 +31,7 @@ export default function USER_CONTENT_Resource_Cards({
             </div>
 
             {/* Item Details */}
-            <div className="flex-1 px-4 text-sm">
+            <div className="flex-1 px-4 text-sm text-center md:text-left">
               <h3 className="text-base font-semibold">{item.name}</h3>
               <p className="text-xs text-muted-foreground mt-2">
                 Version {item.version}
@@ -45,9 +45,14 @@ export default function USER_CONTENT_Resource_Cards({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col gap-2">
-              <Button className="px-4 py-1 text-xs">Download</Button>
-              <Button variant="outline" className="px-4 py-1 text-xs">
+            <div className="flex flex-row md:flex-col gap-2 mt-2 md:mt-0 w-full md:w-auto justify-center md:justify-start">
+              <Button className="px-3 py-1 text-xs  w-full md:w-auto">
+                Download
+              </Button>
+              <Button
+                variant="outline"
+                className="px-3 py-1 text-xs w-full md:w-auto"
+              >
                 View Details
               </Button>
             </div>
