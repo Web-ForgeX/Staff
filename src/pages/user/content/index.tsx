@@ -9,14 +9,14 @@ const purchasedContent = [
     price: "$19.99",
     category: "Plugins",
     image:
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&q=80&w=400&h=300",
+      "https://cdn.builtbybit.com/carousel_images/1687/1687434-76515bbe9c89a73f8aef52db5feff0c6.jpg",
     store: {
       name: "PixelCraft Studios",
       avatar:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=50&h=50",
     },
     version: "2.1.0",
-    lastUpdated: "2024-03-10",
+    lastUpdated: "2024/3/10",
   },
   {
     id: 2,
@@ -25,14 +25,14 @@ const purchasedContent = [
     price: "$24.99",
     category: "Assets",
     image:
-      "https://images.unsplash.com/photo-1615672968435-75cd1c6a9491?auto=format&fit=crop&q=80&w=400&h=300",
+      "https://cdn.builtbybit.com/carousel_images/1687/1687434-76515bbe9c89a73f8aef52db5feff0c6.jpg",
     store: {
       name: "Asset Kings",
       avatar:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=50&h=50",
     },
     version: "1.5.2",
-    lastUpdated: "2024-03-13",
+    lastUpdated: "2024/3/13",
   },
   {
     id: 3,
@@ -48,7 +48,7 @@ const purchasedContent = [
         "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=50&h=50",
     },
     version: "3.0.1",
-    lastUpdated: "2024-03-14",
+    lastUpdated: "2024/3/14",
   },
 ];
 export default function User_Content() {
