@@ -193,19 +193,13 @@ export default function STORE_VIEW_Store_Settings() {
               {/* Add New User */}
               <div className="space-y-4 pt-4 border-t">
                 <h4 className="font-medium">Add New Team Member</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
                   <Input
                     placeholder="Name"
+                    className="w-full"
                     value={newUser.name}
                     onChange={(e) =>
                       setNewUser({ ...newUser, name: e.target.value })
-                    }
-                  />
-                  <Input
-                    placeholder="Tebex Wallet Reference"
-                    value={newUser.walletRef}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, walletRef: e.target.value })
                     }
                   />
                 </div>

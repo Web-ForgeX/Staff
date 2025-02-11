@@ -118,7 +118,9 @@ export default function Store_View() {
           </TabsContent>
           {owner && (
             <TabsContent value="settings" className="text-center">
-              <STORE_VIEW_Store_Settings />
+              <div className="mt-4">
+                <STORE_VIEW_Store_Settings />
+              </div>
             </TabsContent>
           )}
         </Tabs>
