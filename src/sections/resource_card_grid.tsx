@@ -84,9 +84,8 @@ export default function SECTION_Resource_Card_Grid({
               </CardHeader>
               <CardFooter className="p-4 pt-2 mt-auto">
                 <div className="flex items-center text-sm text-muted-foreground">
-                  {resource.author && <span>By {resource.author}</span>}
-                  {resource.version && (
-                    <span className="ml-auto">v{resource.version}</span>
+                  {resource.author && (
+                    <span className="text-primary">{resource.author}</span>
                   )}
                 </div>
               </CardFooter>

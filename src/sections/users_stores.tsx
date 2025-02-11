@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Eye } from "lucide-react";
 import URLS from "@/Config/URLS";
+import { useDeleteModal } from "@/hooks/delete_confirm";
 
 export default function SECTION_Users_Stores({
   controls = false,
@@ -8,7 +9,7 @@ export default function SECTION_Users_Stores({
   controls?: boolean;
 }) {
   const loading = false;
-
+  const { openDeleteModal } = useDeleteModal();
   const stores = [
     {
       id: "61eb8773-bcb6-424f-ba66-ebaf24c71e03",
@@ -96,7 +97,20 @@ export default function SECTION_Users_Stores({
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button variant="destructive" size="icon">
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() =>
+                        openDeleteModal(
+                          `Delete ${store.name}`,
+                          "Are you sure you want to delete this store? This action cannot be undone.",
+                          store.name,
+                          () => {
+                            console.log("User deleted!");
+                          },
+                        )
+                      }
+                    >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

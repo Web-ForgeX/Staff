@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import STORE_VIEW_Store_Info from "./sections/store_info";
 import STORE_VIEW_Store_Members from "./sections/store_members";
-import { Package, Users, Settings } from "lucide-react";
+import { Package, Users, Settings, Plus } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 const sampleResources = [
   {
@@ -94,6 +95,12 @@ export default function Store_View() {
           </TabsList>
 
           <TabsContent value="resources" className="mt-4">
+            <div className="flex justify-between items-center max-w-[95%] md:max-w-full mx-auto mb-4">
+              <div></div>
+              <Button className="flex items-center gap-2">
+                <Plus size={16} /> Add Resource
+              </Button>
+            </div>
             <div className="max-w-[95%] md:max-w-full mx-auto">
               <SECTION_Resource_Card_Grid
                 resources={sampleResources}
@@ -104,7 +111,9 @@ export default function Store_View() {
             </div>
           </TabsContent>
           <TabsContent value="members" className="text-center">
-            <STORE_VIEW_Store_Members />
+            <div className="mt-4">
+              <STORE_VIEW_Store_Members />
+            </div>
           </TabsContent>
           {owner && (
             <TabsContent value="settings" className="text-center">

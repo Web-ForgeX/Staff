@@ -6,6 +6,7 @@ import Layout from "@/layout";
 
 // Providers
 import InboxProvider from "@/hooks/inbox";
+import DeleteModalProvider from "@/hooks/delete_confirm";
 
 // Pages
 import HomePage from "@/pages/home";
@@ -22,23 +23,25 @@ import Store_View from "@/pages/stores/view";
 export default function Router() {
   return (
     <InboxProvider>
-      <PKRouter>
-        <Layout>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
+      <DeleteModalProvider>
+        <PKRouter>
+          <Layout>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<HomePage />} />
 
-            {/* User Routes */}
-            <Route path="/user/settings" element={<User_Settings />} />
-            <Route path="/user/stores" element={<User_Stores />} />
-            <Route path="/user/content" element={<User_Content />} />
+              {/* User Routes */}
+              <Route path="/user/settings" element={<User_Settings />} />
+              <Route path="/user/stores" element={<User_Stores />} />
+              <Route path="/user/content" element={<User_Content />} />
 
-            {/* Store Routes */}
-            <Route path="/stores/create" element={<Store_Create />} />
-            <Route path="/stores/view/:name" element={<Store_View />} />
-          </Routes>
-        </Layout>
-      </PKRouter>
+              {/* Store Routes */}
+              <Route path="/stores/create" element={<Store_Create />} />
+              <Route path="/stores/view/:name" element={<Store_View />} />
+            </Routes>
+          </Layout>
+        </PKRouter>
+      </DeleteModalProvider>
     </InboxProvider>
   );
 }
