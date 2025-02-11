@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import STORE_VIEW_Store_Info from "./sections/store_info";
 import STORE_VIEW_Store_Members from "./sections/store_members";
+import STORE_VIEW_Store_Settings from "./sections/store_settings";
 import { Package, Users, Settings, Plus } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -117,7 +118,7 @@ export default function Store_View() {
           </TabsContent>
           {owner && (
             <TabsContent value="settings" className="text-center">
-              <p>Settings content goes here.</p>
+              <STORE_VIEW_Store_Settings />
             </TabsContent>
           )}
         </Tabs>
