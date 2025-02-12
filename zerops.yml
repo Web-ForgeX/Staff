@@ -1,0 +1,21 @@
+zerops:
+  - setup: forgexweb
+    build:
+      base: bun@1.2
+      buildCommands:
+        - bun install
+        - bun run build
+      deployFiles:
+        - dist
+        - server.js
+        - package.json
+        - node_modules
+      cache:
+        - node_modules
+        - package-lock.json
+    run:
+      base: bun@1.2
+      ports:
+        - port: 3000
+          httpSupport: true
+      start: bun run start
