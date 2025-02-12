@@ -2,7 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeleteModal } from "@/hooks/delete_confirm";
-import { Trash2, Store, ImagePlus, Wallet, Plus, X } from "lucide-react";
+import {
+  Trash2,
+  Store,
+  ImagePlus,
+  Wallet,
+  Plus,
+  X,
+  Save,
+  Upload,
+  ImageIcon,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -32,6 +42,31 @@ const chartConfig = {
   user2: { label: "Jane Smith", color: "chart-2" },
   user3: { label: "Mike Johnson", color: "hsl(var(--chart-3))" },
 } satisfies ChartConfig;
+
+const ImageUploadBox = ({
+  label,
+  subtitle,
+  size,
+}: {
+  label: string;
+  subtitle: string;
+  size: string;
+}) => (
+  <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary transition-colors">
+    <div className="flex flex-col items-center gap-2">
+      <div className="p-3 rounded-full bg-primary/10">
+        <ImageIcon className="w-6 h-6 text-primary" />
+      </div>
+      <div className="space-y-1">
+        <h3 className="font-medium text-base">{label}</h3>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
+      </div>
+      <div className="mt-2 text-sm text-muted-foreground">
+        Recommended size: {size}
+      </div>
+    </div>
+  </div>
+);
 
 export default function STORE_VIEW_Store_Settings() {
   const { openDeleteModal } = useDeleteModal();
@@ -87,12 +122,17 @@ export default function STORE_VIEW_Store_Settings() {
 
   return (
     <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 space-y-6">
+      {/* Header Section */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-primary">Store Settings</h1>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Basic Information */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Store className="w-5 h-5" />
+              <Store className="w-5 h-5 text-primary" />
               Basic Information
             </CardTitle>
             <CardDescription>Manage your store's basic details</CardDescription>
@@ -112,29 +152,88 @@ export default function STORE_VIEW_Store_Settings() {
               </div>
             </div>
           </CardContent>
+          <CardFooter>
+            <Button
+              variant="default"
+              size="sm"
+              className="ml-auto bg-primary hover:bg-primary/90"
+            >
+              Update Details
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Media Section */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ImagePlus className="w-5 h-5" />
+              <ImagePlus className="w-5 h-5 text-primary" />
               Store Media
             </CardTitle>
-            <CardDescription>Upload your store's images</CardDescription>
+            <CardDescription>
+              Upload your store's branding assets
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Profile Picture</label>
-                <Input type="file" />
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Profile Picture</label>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    This will be shown across the platform
+                  </p>
+                  <div className="relative group cursor-pointer">
+                    <input
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      accept="image/*"
+                    />
+                    <ImageUploadBox
+                      label="Upload Profile Picture"
+                      subtitle="Drag and drop or click to upload"
+                      size="1000x1000px"
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Banner Image</label>
-                <Input type="file" />
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Store Banner</label>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    This will appear at the top of your store page
+                  </p>
+                  <div className="relative group cursor-pointer">
+                    <input
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      accept="image/*"
+                    />
+                    <ImageUploadBox
+                      label="Upload Banner Image"
+                      subtitle="Drag and drop or click to upload"
+                      size="2000x1000px"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
+          <CardFooter>
+            <div className="flex items-center justify-between w-full">
+              <p className="text-sm text-muted-foreground">
+                Supported formats: JPEG, PNG, GIF
+              </p>
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Save Media
+              </Button>
+            </div>
+          </CardFooter>
         </Card>
       </div>
 
@@ -144,7 +243,7 @@ export default function STORE_VIEW_Store_Settings() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Wallet className="w-5 h-5" />
+              <Wallet className="w-5 h-5 text-primary" />
               Team Members
             </CardTitle>
             <CardDescription>
@@ -153,60 +252,65 @@ export default function STORE_VIEW_Store_Settings() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {/* Existing Users */}
-              <div className="space-y-4">
-                {users.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex items-center gap-4 p-3 border rounded-lg"
-                  >
-                    <div className="flex-grow">
-                      <div className="font-medium">{user.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {user.walletRef}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        value={user.percentage}
-                        onChange={(e) =>
-                          handlePercentageChange(user.id, e.target.value)
-                        }
-                        className="w-20"
-                        min="0"
-                        max="100"
-                      />
-                      <span className="text-sm">%</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeUser(user.id)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+              {users.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center gap-4 p-3 border rounded-lg hover:border-primary transition-colors"
+                >
+                  <div className="flex-grow">
+                    <div className="font-medium">{user.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {user.walletRef}
                     </div>
                   </div>
-                ))}
-              </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      value={user.percentage}
+                      onChange={(e) =>
+                        handlePercentageChange(user.id, e.target.value)
+                      }
+                      className="w-20"
+                      min="0"
+                      max="100"
+                    />
+                    <span className="text-sm">%</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="hover:text-destructive"
+                      onClick={() => removeUser(user.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
 
               {/* Add New User */}
               <div className="space-y-4 pt-4 border-t">
                 <h4 className="font-medium">Add New Team Member</h4>
-                <div>
+                <div className="space-y-2">
                   <Input
                     placeholder="Name"
-                    className="w-full"
                     value={newUser.name}
                     onChange={(e) =>
                       setNewUser({ ...newUser, name: e.target.value })
                     }
                   />
+                  <Input
+                    placeholder="Wallet Reference"
+                    value={newUser.walletRef}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, walletRef: e.target.value })
+                    }
+                  />
                 </div>
                 <Button
+                  variant="default"
                   onClick={addNewUser}
                   disabled={!newUser.name || !newUser.walletRef}
-                  className="w-full"
+                  className="w-full bg-primary hover:bg-primary/90"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Team Member
@@ -258,26 +362,31 @@ export default function STORE_VIEW_Store_Settings() {
 
       {/* Save Changes Button */}
       <div className="flex justify-start">
-        <Button size="lg" disabled={hasError}>
+        <Button
+          variant="default"
+          size="lg"
+          disabled={hasError}
+          className="bg-primary hover:bg-primary/90 gap-2"
+        >
+          <Save className="w-4 h-4" />
           Save All Changes
         </Button>
       </div>
 
-      <Card className="border-destructive/50">
-        <CardHeader className="text-left">
-          {" "}
-          {/* Ensure the header aligns left */}
-          <CardTitle className="text-destructive flex items-center gap-2 text-left">
+      {/* Danger Zone */}
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="text-destructive flex items-center gap-2">
             <Trash2 className="w-5 h-5" />
             Danger Zone
           </CardTitle>
-          <CardDescription className="text-left">
+          <CardDescription>
             Permanent actions that cannot be undone
           </CardDescription>
         </CardHeader>
-        <CardContent className="text-left">
+        <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground text-left">
+            <p className="text-sm text-muted-foreground">
               Once you delete your store, there is no going back. Please be
               certain.
             </p>
