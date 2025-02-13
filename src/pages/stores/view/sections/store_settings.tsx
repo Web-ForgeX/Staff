@@ -10,7 +10,6 @@ import {
   Plus,
   X,
   Save,
-  Upload,
   ImageIcon,
 } from "lucide-react";
 import {
@@ -153,11 +152,7 @@ export default function STORE_VIEW_Store_Settings() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button
-              variant="default"
-              size="sm"
-              className="ml-auto bg-primary hover:bg-primary/90"
-            >
+            <Button variant="default" size="sm">
               Update Details
             </Button>
           </CardFooter>
@@ -224,13 +219,8 @@ export default function STORE_VIEW_Store_Settings() {
               <p className="text-sm text-muted-foreground">
                 Supported formats: JPEG, PNG, GIF
               </p>
-              <Button
-                variant="default"
-                size="sm"
-                className="bg-primary hover:bg-primary/90"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Save Media
+              <Button variant="default" size="sm">
+                Update Media
               </Button>
             </div>
           </CardFooter>
@@ -258,7 +248,7 @@ export default function STORE_VIEW_Store_Settings() {
                   className="flex items-center gap-4 p-3 border rounded-lg hover:border-primary transition-colors"
                 >
                   <div className="flex-grow">
-                    <div className="font-medium">{user.name}</div>
+                    <div className="font-medium text-primary">{user.name}</div>
                     <div className="text-sm text-muted-foreground">
                       {user.walletRef}
                     </div>
@@ -276,9 +266,8 @@ export default function STORE_VIEW_Store_Settings() {
                     />
                     <span className="text-sm">%</span>
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       size="icon"
-                      className="hover:text-destructive"
                       onClick={() => removeUser(user.id)}
                     >
                       <X className="h-4 w-4" />
@@ -298,19 +287,12 @@ export default function STORE_VIEW_Store_Settings() {
                       setNewUser({ ...newUser, name: e.target.value })
                     }
                   />
-                  <Input
-                    placeholder="Wallet Reference"
-                    value={newUser.walletRef}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, walletRef: e.target.value })
-                    }
-                  />
                 </div>
                 <Button
                   variant="default"
                   onClick={addNewUser}
-                  disabled={!newUser.name || !newUser.walletRef}
-                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={!newUser.name}
+                  className="w-full"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Team Member
@@ -354,7 +336,8 @@ export default function STORE_VIEW_Store_Settings() {
               Total Distribution: {totalPercentage}%
             </div>
             <div className="leading-none text-muted-foreground">
-              Split between {users.length} team members
+              Split between <span className="text-primary">{users.length}</span>{" "}
+              team members
             </div>
           </CardFooter>
         </Card>
@@ -366,7 +349,7 @@ export default function STORE_VIEW_Store_Settings() {
           variant="default"
           size="lg"
           disabled={hasError}
-          className="bg-primary hover:bg-primary/90 gap-2"
+          className="gap-2"
         >
           <Save className="w-4 h-4" />
           Save All Changes
@@ -374,19 +357,16 @@ export default function STORE_VIEW_Store_Settings() {
       </div>
 
       {/* Danger Zone */}
-      <Card className="border-destructive">
+      <Card className="border-destructive bg-destructive/10">
         <CardHeader>
-          <CardTitle className="text-destructive flex items-center gap-2">
-            <Trash2 className="w-5 h-5" />
-            Danger Zone
-          </CardTitle>
-          <CardDescription>
+          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardDescription className="text-destructive">
             Permanent actions that cannot be undone
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-destructive">
               Once you delete your store, there is no going back. Please be
               certain.
             </p>
@@ -402,7 +382,7 @@ export default function STORE_VIEW_Store_Settings() {
                   },
                 )
               }
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full"
             >
               <Trash2 className="w-4 h-4" />
               Delete Store
