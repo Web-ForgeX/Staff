@@ -21,6 +21,11 @@ import User_Content from "@/pages/user/content";
 import Store_Create from "@/pages/stores/create";
 import Store_View from "@/pages/stores/view";
 
+// Info Pages
+import Not_Found from "@/pages/404";
+import TOS from "@/pages/tos";
+import Privacy from "@/pages/privacy";
+
 // Custom hook for managing page title
 const usePageTitle = (title: string) => {
   useEffect(() => {
@@ -59,6 +64,21 @@ const StoreViewWrapper = () => {
   return <Store_View />;
 };
 
+const NotFoundWrapper = () => {
+  usePageTitle("Page Not Found");
+  return <Not_Found />;
+};
+
+const TOSWrapper = () => {
+  usePageTitle("Terms Of Service");
+  return <TOS />;
+};
+
+const PrivacyWrapper = () => {
+  usePageTitle("Privacy");
+  return <Privacy />;
+};
+
 export default function Router() {
   return (
     <InboxProvider>
@@ -77,6 +97,11 @@ export default function Router() {
               {/* Store Routes */}
               <Route path="/stores/create" element={<StoreCreateWrapper />} />
               <Route path="/stores/view/:name" element={<StoreViewWrapper />} />
+
+              {/* Info Routes */}
+              <Route path="*" element={<NotFoundWrapper />} />
+              <Route path="/tos" element={<TOSWrapper />} />
+              <Route path="/privacy" element={<PrivacyWrapper />} />
             </Routes>
           </Layout>
         </PKRouter>

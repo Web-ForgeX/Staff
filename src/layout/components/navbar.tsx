@@ -24,7 +24,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           <a href="/" className="text-2xl font-bold relative group">
             <span className="font-extrabold">Forge</span>
-            <span className="font-black text-primary transition-transform duration-500 group-hover:rotate-[360deg]">
+            <span className="font-black text-primary duration-500 group-hover:animate-pulse">
               X
             </span>
           </a>

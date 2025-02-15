@@ -87,6 +87,13 @@ export default function InboxProvider({ children }: { children: ReactNode }) {
       createdAt: "2025-02-09",
       read: true,
     },
+    {
+      id: 3,
+      text: "Another message",
+      detailed: "Another detailed text.",
+      createdAt: "2025-02-09",
+      read: true,
+    },
   ]);
 
   const toggleInboxPopup = () => setIsInboxOpen(!isInboxOpen);
