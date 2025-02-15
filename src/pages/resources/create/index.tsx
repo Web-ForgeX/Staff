@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -32,6 +32,14 @@ export default function Resource_Create() {
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=50&h=50",
     },
   ];
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const storeId = params.get("store");
+    if (storeId && stores.some((store) => store.id === storeId)) {
+      setSelectedStore(storeId);
+    }
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;

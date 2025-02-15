@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import STORE_VIEW_Store_Info from "./sections/store_info";
 import STORE_VIEW_Store_Members from "./sections/store_members";
 import STORE_VIEW_Store_Settings from "./sections/store_settings";
@@ -98,8 +98,13 @@ export default function Store_View() {
           <TabsContent value="resources" className="mt-4">
             <div className="flex justify-between items-center max-w-[95%] md:max-w-full mx-auto mb-4">
               <div></div>
-              <Button className="flex items-center gap-2">
-                <Plus size={16} /> Add Resource
+              <Button>
+                <Link
+                  className="flex items-center gap-2"
+                  to={`/resources/create?store=1`}
+                >
+                  <Plus size={16} /> Add Resource
+                </Link>
               </Button>
             </div>
             <div className="max-w-[95%] md:max-w-full mx-auto">
