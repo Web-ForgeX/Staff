@@ -8,13 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Upload,
-  Image as ImageIcon,
-  Grid2X2,
-  LayoutGrid,
-  GripHorizontal,
-} from "lucide-react";
+import { Upload, Image as ImageIcon, GripHorizontal } from "lucide-react";
 
 export default function Resource_Create() {
   const [displayType, setDisplayType] = useState<"grid" | "list">("grid");
@@ -238,29 +232,34 @@ export default function Resource_Create() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setDisplayType("grid")}
-                    className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all ${
+                    className={`flex-1 aspect-video rounded-lg border bg-card transition-all cursor-pointer ${
                       displayType === "grid"
                         ? "ring-2 ring-primary scale-[1.02]"
                         : ""
                     }`}
                   >
-                    <Grid2X2 className="h-8 w-8 text-primary" />
-                    <span className="text-sm font-medium">Grid Layout</span>
+                    <img
+                      src="https://assets.forgex.net/SVG/resource_layout.svg"
+                      alt="Grid Layout"
+                      className="w-full h-full"
+                    />
                   </button>
                   <button
                     onClick={() => setDisplayType("list")}
-                    className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all ${
+                    className={`flex-1 aspect-video rounded-lg border bg-card transition-all cursor-pointer ${
                       displayType === "list"
                         ? "ring-2 ring-primary scale-[1.02]"
                         : ""
                     }`}
                   >
-                    <LayoutGrid className="h-8 w-8 text-primary" />
-                    <span className="text-sm font-medium">List Layout</span>
+                    <img
+                      src="https://assets.forgex.net/SVG/resource_layout_2.svg"
+                      alt="List Layout"
+                      className="w-full h-full"
+                    />
                   </button>
                 </div>
               </div>
-
               {/* Image Upload */}
               <div className="space-y-4">
                 <label className="text-sm font-medium">Resource Images</label>
