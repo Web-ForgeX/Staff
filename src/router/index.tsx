@@ -29,6 +29,10 @@ import Not_Found from "@/pages/404";
 import TOS from "@/pages/tos";
 import Privacy from "@/pages/privacy";
 
+// Auth Pages
+import Signin from "@/pages/auth/signin";
+import Signup from "@/pages/auth/signup";
+
 // Custom hook for managing page title
 const usePageTitle = (title: string) => {
   useEffect(() => {
@@ -87,6 +91,16 @@ const PrivacyWrapper = () => {
   return <Privacy />;
 };
 
+const SignupWrapper = () => {
+  usePageTitle("Sign Up");
+  return <Signup />;
+};
+
+const SigninWrapper = () => {
+  usePageTitle("Sign In");
+  return <Signin />;
+};
+
 export default function Router() {
   return (
     <InboxProvider>
@@ -116,6 +130,10 @@ export default function Router() {
               <Route path="*" element={<NotFoundWrapper />} />
               <Route path="/tos" element={<TOSWrapper />} />
               <Route path="/privacy" element={<PrivacyWrapper />} />
+
+              {/* Auth Routes */}
+              <Route path="/auth/signup" element={<SignupWrapper />} />
+              <Route path="/auth/signin" element={<SigninWrapper />} />
             </Routes>
           </Layout>
         </PKRouter>

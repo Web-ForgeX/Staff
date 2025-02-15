@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import SECTION_Auth_Buttons from "@/sections/auth_buttons";
 import SECTION_Nav_Profile from "@/sections/nav_profile";
 
-const user = true;
+const user = false;
 export default function Navbar() {
   // States
   const [isMenuOpen, setIsMenuOpen] = useState(false);
