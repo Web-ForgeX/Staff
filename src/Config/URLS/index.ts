@@ -8,5 +8,5 @@ export default {
   STORE_AVATAR_BUCKET: `${BUCKETS}/stores/pictures`,
   STORE_BANNER_BUCKET: `${BUCKETS}/stores/banners`,
   RESOURCES_BUCKET: `${BUCKETS}/sign/resources`,
-  CDN: "https://raw.githubusercontent.com/Web-ForgeX/Branding/refs/heads/main",
+  CDN: "https://assets.forgex.net",
 };

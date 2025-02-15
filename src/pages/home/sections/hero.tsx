@@ -8,7 +8,7 @@ export default function HOME_Hero() {
       <div className="relative z-10">
         <div className="relative">
           <div
-            className={`max-w-full mx-auto px-4 py-12 bg-[url(https://raw.githubusercontent.com/Web-ForgeX/Branding/refs/heads/main/SVG/green_banner.svg)] bg-cover bg-no-repeat`}
+            className={`max-w-full mx-auto px-4 py-12 bg-[url(https://assets.forgex.net/SVG/green_banner.svg)] bg-cover bg-no-repeat`}
           >
             <div className="text-center">
               <h2 className="text-3xl tracking-tight font-extrabold sm:text-4xl md:text-5xl text-white">
