@@ -8,6 +8,7 @@ import Layout from "@/layout";
 // Providers
 import InboxProvider from "@/hooks/inbox";
 import DeleteModalProvider from "@/hooks/delete_confirm";
+import AuthProvider from "@/hooks/user";
 
 // Pages
 import HomePage from "@/pages/home";
@@ -109,45 +110,53 @@ const SigninWrapper = () => {
 
 export default function Router() {
   return (
-    <InboxProvider>
-      <DeleteModalProvider>
-        <PKRouter>
-          <Layout>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<HomeWrapper />} />
+    <AuthProvider>
+      <InboxProvider>
+        <DeleteModalProvider>
+          <PKRouter>
+            <Layout>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<HomeWrapper />} />
 
-              {/* User Routes */}
-              <Route path="/user/settings" element={<UserSettingsWrapper />} />
-              <Route path="/user/stores" element={<UserStoresWrapper />} />
-              <Route path="/user/content" element={<UserContentWrapper />} />
+                {/* User Routes */}
+                <Route
+                  path="/user/settings"
+                  element={<UserSettingsWrapper />}
+                />
+                <Route path="/user/stores" element={<UserStoresWrapper />} />
+                <Route path="/user/content" element={<UserContentWrapper />} />
 
-              {/* Store Routes */}
-              <Route path="/stores/create" element={<StoreCreateWrapper />} />
-              <Route path="/stores/view/:name" element={<StoreViewWrapper />} />
+                {/* Store Routes */}
+                <Route path="/stores/create" element={<StoreCreateWrapper />} />
+                <Route
+                  path="/stores/view/:name"
+                  element={<StoreViewWrapper />}
+                />
 
-              {/* Resource Routes */}
-              <Route
-                path="/resources/create"
-                element={<ResourceCreateWrapper />}
-              />
-              <Route
-                path="/resources/:store/:name"
-                element={<ResourceViewWrapper />}
-              />
+                {/* Resource Routes */}
+                <Route
+                  path="/resources/create"
+                  element={<ResourceCreateWrapper />}
+                />
+                <Route
+                  path="/resources/:store/:name"
+                  element={<ResourceViewWrapper />}
+                />
 
-              {/* Info Routes */}
-              <Route path="*" element={<NotFoundWrapper />} />
-              <Route path="/tos" element={<TOSWrapper />} />
-              <Route path="/privacy" element={<PrivacyWrapper />} />
+                {/* Info Routes */}
+                <Route path="*" element={<NotFoundWrapper />} />
+                <Route path="/tos" element={<TOSWrapper />} />
+                <Route path="/privacy" element={<PrivacyWrapper />} />
 
-              {/* Auth Routes */}
-              <Route path="/auth/signup" element={<SignupWrapper />} />
-              <Route path="/auth/signin" element={<SigninWrapper />} />
-            </Routes>
-          </Layout>
-        </PKRouter>
-      </DeleteModalProvider>
-    </InboxProvider>
+                {/* Auth Routes */}
+                <Route path="/auth/signup" element={<SignupWrapper />} />
+                <Route path="/auth/signin" element={<SigninWrapper />} />
+              </Routes>
+            </Layout>
+          </PKRouter>
+        </DeleteModalProvider>
+      </InboxProvider>
+    </AuthProvider>
   );
 }

@@ -1,5 +1,6 @@
 import { Mail, Folder, Store, Settings } from "lucide-react";
 import VerifiedBadge from "@/components/ui/verified";
+import { User } from "@supabase/supabase-js";
 
 import { Button } from "@/components/ui/button";
 import URLS from "@/Config/URLS";
@@ -7,9 +8,8 @@ import URLS from "@/Config/URLS";
 // Hooks
 import { useInbox } from "@/hooks/inbox";
 
-export default function SECTION_Nav_Profile() {
+export default function SECTION_Nav_Profile({ user }: { user: User }) {
   const unreadCount = 3;
-  const verified = true;
   const { toggleInboxPopup } = useInbox();
 
   const navigateTo = (path: string) => () => {
@@ -20,13 +20,15 @@ export default function SECTION_Nav_Profile() {
     <div className="flex items-center space-x-3 bg-secondary px-3 h-12 py-1 rounded-lg">
       <div className="flex items-center space-x-2">
         <img
-          src={`${URLS.USER_AVATARS_BUCKET}/a253cd8a-3445-4641-b911-137125dc8e38.jpg`}
+          src={`${URLS.USER_AVATARS_BUCKET}/${user?.id}.jpg`}
           alt="User Avatar"
           className="w-6 h-6 rounded-full"
         />
         <div className="flex items-center space-x-1">
-          <span className="text-sm font-medium">Char</span>
-          {verified && <VerifiedBadge className="w-3" />}
+          <span className="text-sm font-medium">
+            {user?.user_metadata?.username}
+          </span>
+          {user?.user_metadata?.verified && <VerifiedBadge className="w-3" />}
         </div>
       </div>
       <div className="border-r border-black/10 mx-2 h-6" />

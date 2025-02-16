@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button";
 import SECTION_Auth_Buttons from "@/sections/auth_buttons";
 import SECTION_Nav_Profile from "@/sections/nav_profile";
 
-const user = false;
+import { useAuth } from "@/hooks/user";
+
 export default function Navbar() {
   // States
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Functions
@@ -30,7 +32,11 @@ export default function Navbar() {
           </a>
 
           <div className="hidden md:block">
-            {user ? <SECTION_Nav_Profile /> : <SECTION_Auth_Buttons />}
+            {user ? (
+              <SECTION_Nav_Profile user={user} />
+            ) : (
+              <SECTION_Auth_Buttons />
+            )}
           </div>
 
           <div className="md:hidden">
@@ -55,7 +61,11 @@ export default function Navbar() {
         >
           <div className="bg-background border-b border-border shadow-lg">
             <div className="space-y-4 p-4">
-              {user ? <SECTION_Nav_Profile /> : <SECTION_Auth_Buttons />}
+              {user ? (
+                <SECTION_Nav_Profile user={user} />
+              ) : (
+                <SECTION_Auth_Buttons />
+              )}
             </div>
           </div>
         </div>

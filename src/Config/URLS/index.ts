@@ -2,7 +2,7 @@ const BUCKETS =
   "https://nijvzcdijjnlnkjbulkf.supabase.co/storage/v1/object/public";
 
 export default {
-  API: "https://forgexapi-c28-4005.prg1.zerops.app",
+  API: "https://api.forgex.net",
   BUCKETS,
   USER_AVATARS_BUCKET: `${BUCKETS}/profile-pictures`,
   STORE_AVATAR_BUCKET: `${BUCKETS}/stores/pictures`,
