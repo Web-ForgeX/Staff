@@ -20,7 +20,7 @@ export default function SECTION_Nav_Profile({ user }: { user: User }) {
     <div className="flex items-center space-x-3 bg-secondary px-3 h-12 py-1 rounded-lg">
       <div className="flex items-center space-x-2">
         <img
-          src={`${URLS.USER_AVATARS_BUCKET}/${user?.user_metadata?.avatar}`}
+          src={`${URLS.USER_AVATARS_BUCKET}/${user?.id}.png`}
           alt="User Avatar"
           className="w-6 h-6 rounded-full"
         />
