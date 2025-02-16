@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,14 +8,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Upload, Image as ImageIcon, GripHorizontal } from "lucide-react";
+import {
+  Upload,
+  Image as ImageIcon,
+  Grid2X2,
+  LayoutGrid,
+  GripHorizontal,
+  Plus,
+  X,
+  FileText,
+  MessageSquare,
+  Globe,
+  Book,
+  RefreshCw,
+  File,
+  Trash2,
+} from "lucide-react";
+
+interface UploadedFile {
+  file: File;
+  id: string;
+}
 
 export default function Resource_Create() {
   const [displayType, setDisplayType] = useState<"grid" | "list">("grid");
   const [images, setImages] = useState<string[]>([]);
   const [draggedImage, setDraggedImage] = useState<number | null>(null);
   const [selectedStore, setSelectedStore] = useState<string>("");
+  const [features, setFeatures] = useState<string[]>([""]);
+  const [requirements, setRequirements] = useState<string[]>([""]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
+  const [supportOptions, setSupportOptions] = useState({
+    documentation: { enabled: false, value: "" },
+    discord: { enabled: false, value: "" },
+    website: { enabled: false, value: "" },
+    updates: { enabled: false, value: "" },
+  });
   const dragRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Mock data - would come from API in real app
   const stores = [
@@ -33,14 +64,6 @@ export default function Resource_Create() {
     },
   ];
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const storeId = params.get("store");
-    if (storeId && stores.some((store) => store.id === storeId)) {
-      setSelectedStore(storeId);
-    }
-  }, []);
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -54,7 +77,6 @@ export default function Resource_Create() {
   const handleDragStart = (index: number, e: React.DragEvent) => {
     setDraggedImage(index);
 
-    // Hide the browser's default ghost image
     const emptyImg = document.createElement("img");
     e.dataTransfer.setDragImage(emptyImg, 0, 0);
 
@@ -62,7 +84,6 @@ export default function Resource_Create() {
     target.style.opacity = "0.5";
     target.style.transform = "scale(1.05)";
 
-    // Create a clone of the dragged element for the custom ghost image
     if (dragRef.current) {
       const clone = target.cloneNode(true) as HTMLElement;
       clone.style.position = "fixed";
@@ -74,7 +95,6 @@ export default function Resource_Create() {
       clone.style.height = `${target.offsetHeight}px`;
       dragRef.current.appendChild(clone);
 
-      // Update ghost image position during drag
       const handleDragMove = (moveEvent: MouseEvent) => {
         if (clone) {
           clone.style.top = `${moveEvent.clientY - target.offsetHeight / 2}px`;
@@ -84,7 +104,6 @@ export default function Resource_Create() {
 
       document.addEventListener("mousemove", handleDragMove);
 
-      // Cleanup
       e.currentTarget.addEventListener(
         "dragend",
         () => {
@@ -128,6 +147,125 @@ export default function Resource_Create() {
 
     setImages(newImages);
     setDraggedImage(null);
+  };
+
+  const handleListChange = (
+    index: number,
+    value: string,
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
+    const newList = [...list];
+    newList[index] = value;
+    setList(newList);
+  };
+
+  const addListItem = (
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
+    setList([...list, ""]);
+  };
+
+  const removeListItem = (
+    index: number,
+    list: string[],
+    setList: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
+    if (list.length > 1) {
+      const newList = list.filter((_, i) => i !== index);
+      setList(newList);
+    }
+  };
+
+  const toggleSupportOption = (option: keyof typeof supportOptions) => {
+    setSupportOptions((prev) => ({
+      ...prev,
+      [option]: {
+        ...prev[option],
+        enabled: !prev[option].enabled,
+      },
+    }));
+  };
+
+  const updateSupportValue = (
+    option: keyof typeof supportOptions,
+    value: string,
+  ) => {
+    setSupportOptions((prev) => ({
+      ...prev,
+      [option]: {
+        ...prev[option],
+        value,
+      },
+    }));
+  };
+
+  // New file upload handlers
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles = Array.from(files).map((file) => ({
+        file,
+        id: crypto.randomUUID(),
+      }));
+      setUploadedFiles((prev) => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingFiles(false);
+
+    const files = e.dataTransfer.files;
+    if (files) {
+      const newFiles = Array.from(files).map((file) => ({
+        file,
+        id: crypto.randomUUID(),
+      }));
+      setUploadedFiles((prev) => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleFileDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingFiles(true);
+  };
+
+  const handleFileDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingFiles(false);
+  };
+
+  const removeFile = (id: string) => {
+    setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  };
+
+  const getFileIcon = (fileName: string) => {
+    const extension = fileName.split(".").pop()?.toLowerCase();
+    switch (extension) {
+      case "pdf":
+        return (
+          <FileText className="h-10 w-10 p-2 text-red-500 bg-red-500/30" />
+        );
+      case "zip":
+      case "rar":
+        return (
+          <File className="h-10 w-10 p-2 text-yellow-500 bg-yellow-500/30" />
+        );
+      default:
+        return (
+          <File className="h-10 w-10 p-2 rounded text-primary bg-primary/30" />
+        );
+    }
   };
 
   return (
@@ -234,40 +372,241 @@ export default function Resource_Create() {
                 </div>
               </div>
 
+              {/* Features */}
+              <div className="space-y-4">
+                <label className="text-sm font-medium">Features</label>
+                <div className="space-y-3">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={feature}
+                        onChange={(e) =>
+                          handleListChange(
+                            index,
+                            e.target.value,
+                            features,
+                            setFeatures,
+                          )
+                        }
+                        placeholder="Enter a feature..."
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          removeListItem(index, features, setFeatures)
+                        }
+                        disabled={features.length === 1}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    onClick={() => addListItem(features, setFeatures)}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Feature
+                  </Button>
+                </div>
+              </div>
+
+              {/* Requirements */}
+              <div className="space-y-4">
+                <label className="text-sm font-medium">Requirements</label>
+                <div className="space-y-3">
+                  {requirements.map((requirement, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={requirement}
+                        onChange={(e) =>
+                          handleListChange(
+                            index,
+                            e.target.value,
+                            requirements,
+                            setRequirements,
+                          )
+                        }
+                        placeholder="Enter a requirement..."
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          removeListItem(index, requirements, setRequirements)
+                        }
+                        disabled={requirements.length === 1}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    onClick={() => addListItem(requirements, setRequirements)}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Requirement
+                  </Button>
+                </div>
+              </div>
+
+              {/* Support Options */}
+              <div className="space-y-4">
+                <label className="text-sm font-medium">Support Options</label>
+                <div className="space-y-4">
+                  {/* Documentation */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Book className="h-5 w-5 text-primary" />
+                        <span>Documentation</span>
+                      </div>
+                      <Button
+                        variant={
+                          supportOptions.documentation.enabled
+                            ? "default"
+                            : "outline"
+                        }
+                        onClick={() => toggleSupportOption("documentation")}
+                      >
+                        {supportOptions.documentation.enabled
+                          ? "Enabled"
+                          : "Disabled"}
+                      </Button>
+                    </div>
+                    {supportOptions.documentation.enabled && (
+                      <Input
+                        value={supportOptions.documentation.value}
+                        onChange={(e) =>
+                          updateSupportValue("documentation", e.target.value)
+                        }
+                        placeholder="Enter documentation URL..."
+                      />
+                    )}
+                  </div>
+
+                  {/* Discord Server */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-5 w-5 text-primary" />
+                        <span>Discord Server</span>
+                      </div>
+                      <Button
+                        variant={
+                          supportOptions.discord.enabled ? "default" : "outline"
+                        }
+                        onClick={() => toggleSupportOption("discord")}
+                      >
+                        {supportOptions.discord.enabled
+                          ? "Enabled"
+                          : "Disabled"}
+                      </Button>
+                    </div>
+                    {supportOptions.discord.enabled && (
+                      <Input
+                        value={supportOptions.discord.value}
+                        onChange={(e) =>
+                          updateSupportValue("discord", e.target.value)
+                        }
+                        placeholder="Enter Discord server invite URL..."
+                      />
+                    )}
+                  </div>
+
+                  {/* Website */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Globe className="h-5 w-5 text-primary" />
+                        <span>Website</span>
+                      </div>
+                      <Button
+                        variant={
+                          supportOptions.website.enabled ? "default" : "outline"
+                        }
+                        onClick={() => toggleSupportOption("website")}
+                      >
+                        {supportOptions.website.enabled
+                          ? "Enabled"
+                          : "Disabled"}
+                      </Button>
+                    </div>
+                    {supportOptions.website.enabled && (
+                      <Input
+                        value={supportOptions.website.value}
+                        onChange={(e) =>
+                          updateSupportValue("website", e.target.value)
+                        }
+                        placeholder="Enter website URL..."
+                      />
+                    )}
+                  </div>
+
+                  {/* Updates */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <RefreshCw className="h-5 w-5 text-primary" />
+                        <span>Updates</span>
+                      </div>
+                      <Button
+                        variant={
+                          supportOptions.updates.enabled ? "default" : "outline"
+                        }
+                        onClick={() => toggleSupportOption("updates")}
+                      >
+                        {supportOptions.updates.enabled
+                          ? "Enabled"
+                          : "Disabled"}
+                      </Button>
+                    </div>
+                    {supportOptions.updates.enabled && (
+                      <Input
+                        value={supportOptions.updates.value}
+                        onChange={(e) =>
+                          updateSupportValue("updates", e.target.value)
+                        }
+                        placeholder="Enter update policy or changelog URL..."
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* Display Type Selection */}
               <div className="space-y-4">
                 <label className="text-sm font-medium">Display Type</label>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setDisplayType("grid")}
-                    className={`flex-1 aspect-video rounded-lg border bg-card transition-all cursor-pointer ${
+                    className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all ${
                       displayType === "grid"
                         ? "ring-2 ring-primary scale-[1.02]"
                         : ""
                     }`}
                   >
-                    <img
-                      src="https://assets.forgex.net/SVG/resource_layout.svg"
-                      alt="Grid Layout"
-                      className="w-full h-full"
-                    />
+                    <Grid2X2 className="h-8 w-8 text-primary" />
+                    <span className="text-sm font-medium">Grid Layout</span>
                   </button>
                   <button
                     onClick={() => setDisplayType("list")}
-                    className={`flex-1 aspect-video rounded-lg border bg-card transition-all cursor-pointer ${
+                    className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all ${
                       displayType === "list"
                         ? "ring-2 ring-primary scale-[1.02]"
                         : ""
                     }`}
                   >
-                    <img
-                      src="https://assets.forgex.net/SVG/resource_layout_2.svg"
-                      alt="List Layout"
-                      className="w-full h-full"
-                    />
+                    <LayoutGrid className="h-8 w-8 text-primary" />
+                    <span className="text-sm font-medium">List Layout</span>
                   </button>
                 </div>
               </div>
+
               {/* Image Upload */}
               <div className="space-y-4">
                 <label className="text-sm font-medium">Resource Images</label>
@@ -319,19 +658,81 @@ export default function Resource_Create() {
               {/* Resource Content Upload */}
               <div className="space-y-4">
                 <label className="text-sm font-medium">Resource Content</label>
-                <div className="border-2 border-dashed rounded-lg p-8">
-                  <div className="flex flex-col items-center gap-4">
-                    <Upload className="h-12 w-12 text-muted-foreground" />
-                    <div className="text-center">
-                      <p className="font-medium">
-                        Drop your resource files here
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        or click to browse from your computer
-                      </p>
+                <div
+                  className={`border-2 border-dashed rounded-lg transition-colors ${
+                    isDraggingFiles
+                      ? "border-primary bg-primary/5"
+                      : uploadedFiles.length > 0
+                        ? "border-border bg-card"
+                        : "border-border"
+                  }`}
+                  onDragOver={handleFileDragOver}
+                  onDragLeave={handleFileDragLeave}
+                  onDrop={handleFileDrop}
+                >
+                  {uploadedFiles.length === 0 ? (
+                    <div className="p-8">
+                      <div className="flex flex-col items-center gap-4">
+                        <Upload className="h-12 w-12 text-muted-foreground" />
+                        <div className="text-center">
+                          <p className="font-medium">
+                            Drop your resource files here
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            or click to browse from your computer
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          Select Files
+                        </Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          className="hidden"
+                          onChange={handleFileSelect}
+                        />
+                      </div>
                     </div>
-                    <Button variant="outline">Select Files</Button>
-                  </div>
+                  ) : (
+                    <div className="p-4 space-y-3">
+                      {uploadedFiles.map((file) => (
+                        <div
+                          key={file.id}
+                          className="flex items-center gap-4 p-3 bg-accent/50 rounded-lg group hover:bg-accent transition-colors"
+                        >
+                          {getFileIcon(file.file.name)}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">
+                              {file.file.name}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {formatFileSize(file.file.size)}
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeFile(file.id)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add More Files
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 
