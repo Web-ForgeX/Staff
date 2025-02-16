@@ -23,6 +23,7 @@ import Store_View from "@/pages/stores/view";
 
 // Resource Pages
 import Resource_Create from "@/pages/resources/create";
+import Resource_View from "@/pages/resources/view";
 
 // Info Pages
 import Not_Found from "@/pages/404";
@@ -76,6 +77,11 @@ const ResourceCreateWrapper = () => {
   return <Resource_Create />;
 };
 
+const ResourceViewWrapper = () => {
+  usePageTitle("RESOURECE NAME");
+  return <Resource_View />;
+};
+
 const NotFoundWrapper = () => {
   usePageTitle("Page Not Found");
   return <Not_Found />;
@@ -120,10 +126,14 @@ export default function Router() {
               <Route path="/stores/create" element={<StoreCreateWrapper />} />
               <Route path="/stores/view/:name" element={<StoreViewWrapper />} />
 
-              {/* Store Routes */}
+              {/* Resource Routes */}
               <Route
                 path="/resources/create"
                 element={<ResourceCreateWrapper />}
+              />
+              <Route
+                path="/resources/:store/:name"
+                element={<ResourceViewWrapper />}
               />
 
               {/* Info Routes */}
