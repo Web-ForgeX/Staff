@@ -24,7 +24,7 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
           <label className="cursor-pointer block relative">
             <Input type="file" accept="image/*" className="hidden" />
             <img
-              src={`${URLS.USER_AVATARS_BUCKET}/${user.id}.jpg`}
+              src={`${URLS.USER_AVATARS_BUCKET}/${user?.user_metadata?.avatar}`}
               alt={`${user?.user_metadata?.username}`}
               className="w-20 h-20 rounded-full object-cover border-border border-2"
             />
