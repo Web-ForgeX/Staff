@@ -9,7 +9,6 @@ import URLS from "@/Config/URLS";
 import { useInbox } from "@/hooks/inbox";
 
 export default function SECTION_Nav_Profile({ user }: { user: User }) {
-  const unreadCount = 3;
   const { toggleInboxPopup } = useInbox();
 
   const navigateTo = (path: string) => () => {
@@ -39,9 +38,9 @@ export default function SECTION_Nav_Profile({ user }: { user: User }) {
         className="relative"
       >
         <Mail className="w-5 h-5" />
-        {unreadCount > 0 && (
+        {user?.user_metadata?.inbox_unread > 0 && (
           <span className="absolute top-1 right-0 bg-primary text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
-            {unreadCount}
+            {user?.user_metadata?.inbox_unread}
           </span>
         )}
       </Button>

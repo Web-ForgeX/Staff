@@ -12,6 +12,7 @@ export async function UserSignUp({ username, email, password }: UserLogin) {
         picture: "default.jpg",
         stores: [],
         verified: false,
+        inbox_unread: 10,
       },
     },
   });
