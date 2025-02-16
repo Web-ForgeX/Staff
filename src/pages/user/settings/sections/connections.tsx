@@ -1,8 +1,26 @@
 import { Button } from "@/components/ui/button";
+import { User } from "@supabase/supabase-js";
+import supabase from "@/API/supabase";
 
-export default function USER_SETTINGS_Connections() {
-  const discord_linked = true; // Change this to false to test the "Connect Discord" state
-  const user_avatar = "https://cdn.discordapp.com/embed/avatars/1.png"; // Replace with actual avatar URL
+export default function USER_SETTINGS_Connections({ user }: { user: User }) {
+  const discordIdentity = user.identities?.find(
+    (identity) => identity.provider === "discord",
+  );
+
+  const handleDiscordConnect = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "discord",
+        options: {
+          redirectTo: `${window.location.origin}/user/settings`,
+          scopes: "identify",
+        },
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error connecting Discord:", error);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border-2 border-border p-6 mb-8">
@@ -15,22 +33,23 @@ export default function USER_SETTINGS_Connections() {
       </p>
 
       <div className="flex justify-center sm:justify-start">
-        {discord_linked ? (
+        {discordIdentity ? (
           <Button
             variant="secondary"
             className="w-full sm:w-auto flex items-center gap-2 px-4 py-2"
           >
             <img
-              src={user_avatar}
+              src={discordIdentity?.identity_data?.avatar_url}
               alt="Discord Avatar"
               className="w-6 h-6 rounded-full"
             />
-            Linked to Char
+            Linked to {discordIdentity?.identity_data?.full_name}
           </Button>
         ) : (
           <Button
             variant="secondary"
             className="w-full sm:w-auto bg-[#5865F2] hover:bg-[#454FBF] text-primary-foreground flex items-center gap-2 px-4 py-2"
+            onClick={handleDiscordConnect}
           >
             <svg
               className="w-5 h-5"

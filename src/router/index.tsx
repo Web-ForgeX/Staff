@@ -1,114 +1,114 @@
-// Packages
 import { BrowserRouter as PKRouter, Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
 
-// Components
+// Components and Layout
 import Layout from "@/layout";
+import HomePage from "@/pages/home";
+import User_Settings from "@/pages/user/settings";
+import User_Stores from "@/pages/user/stores";
+import User_Content from "@/pages/user/content";
+import Store_Create from "@/pages/stores/create";
+import Store_View from "@/pages/stores/view";
+import Resource_Create from "@/pages/resources/create";
+import Resource_View from "@/pages/resources/view";
+import Not_Found from "@/pages/404";
+import TOS from "@/pages/tos";
+import Privacy from "@/pages/privacy";
+import Signin from "@/pages/auth/signin";
+import Signup from "@/pages/auth/signup";
 
 // Providers
 import InboxProvider from "@/hooks/inbox";
 import DeleteModalProvider from "@/hooks/delete_confirm";
-import AuthProvider from "@/hooks/user";
+import AuthProvider, { ProtectedRoute } from "@/hooks/user";
 
-// Pages
-import HomePage from "@/pages/home";
+// Types
+interface RouteConfig {
+  path: string;
+  title: string;
+  element: React.ComponentType;
+  protected?: boolean;
+}
 
-// User Pages
-import User_Settings from "@/pages/user/settings";
-import User_Stores from "@/pages/user/stores";
-import User_Content from "@/pages/user/content";
-
-// Store Pages
-import Store_Create from "@/pages/stores/create";
-import Store_View from "@/pages/stores/view";
-
-// Resource Pages
-import Resource_Create from "@/pages/resources/create";
-import Resource_View from "@/pages/resources/view";
-
-// Info Pages
-import Not_Found from "@/pages/404";
-import TOS from "@/pages/tos";
-import Privacy from "@/pages/privacy";
-
-// Auth Pages
-import Signin from "@/pages/auth/signin";
-import Signup from "@/pages/auth/signup";
-
-// Custom hook for managing page title
-const usePageTitle = (title: string) => {
+// Custom hook with TypeScript
+const usePageTitle = (title: string): void => {
   useEffect(() => {
     document.title = title ? `ForgeX | ${title}` : "ForgeX";
   }, [title]);
 };
 
-// Wrapper components with titles
-const HomeWrapper = () => {
-  usePageTitle("Home");
-  return <HomePage />;
+// Higher-order component to wrap pages with titles
+const withPageTitle = (
+  WrappedComponent: React.ComponentType,
+  title: string,
+): React.ReactElement => {
+  const WithPageTitleComponent = () => {
+    usePageTitle(title);
+    return <WrappedComponent />;
+  };
+  return <WithPageTitleComponent />;
 };
 
-const UserSettingsWrapper = () => {
-  usePageTitle("User Settings");
-  return <User_Settings />;
-};
+// Route configurations
+const ROUTES: RouteConfig[] = [
+  // Public Routes
+  { path: "/", title: "Home", element: HomePage },
 
-const UserStoresWrapper = () => {
-  usePageTitle("My Stores");
-  return <User_Stores />;
-};
+  // User Routes
+  {
+    path: "/user/settings",
+    title: "User Settings",
+    element: User_Settings,
+    protected: true,
+  },
+  {
+    path: "/user/stores",
+    title: "My Stores",
+    element: User_Stores,
+    protected: true,
+  },
+  {
+    path: "/user/content",
+    title: "My Content",
+    element: User_Content,
+    protected: true,
+  },
 
-const UserContentWrapper = () => {
-  usePageTitle("My Content");
-  return <User_Content />;
-};
+  // Store Routes
+  {
+    path: "/stores/create",
+    title: "Create Store",
+    element: Store_Create,
+    protected: true,
+  },
+  { path: "/stores/view/:name", title: "Store Details", element: Store_View },
 
-const StoreCreateWrapper = () => {
-  usePageTitle("Create Store");
-  return <Store_Create />;
-};
+  // Resource Routes
+  {
+    path: "/resources/create",
+    title: "Create A Resource",
+    element: Resource_Create,
+    protected: true,
+  },
+  {
+    path: "/resources/:store/:name",
+    title: "Resource Details",
+    element: Resource_View,
+  },
 
-const StoreViewWrapper = () => {
-  usePageTitle("Store Details");
-  return <Store_View />;
-};
+  // Info Routes
+  { path: "/tos", title: "Terms Of Service", element: TOS },
+  { path: "/privacy", title: "Privacy", element: Privacy },
 
-const ResourceCreateWrapper = () => {
-  usePageTitle("Create A Resource");
-  return <Resource_Create />;
-};
+  // Auth Routes
+  { path: "/auth/signup", title: "Sign Up", element: Signup },
+  { path: "/auth/signin", title: "Sign In", element: Signin },
 
-const ResourceViewWrapper = () => {
-  usePageTitle("RESOURECE NAME");
-  return <Resource_View />;
-};
+  // 404 Route - Keep last
+  { path: "*", title: "Page Not Found", element: Not_Found },
+];
 
-const NotFoundWrapper = () => {
-  usePageTitle("Page Not Found");
-  return <Not_Found />;
-};
-
-const TOSWrapper = () => {
-  usePageTitle("Terms Of Service");
-  return <TOS />;
-};
-
-const PrivacyWrapper = () => {
-  usePageTitle("Privacy");
-  return <Privacy />;
-};
-
-const SignupWrapper = () => {
-  usePageTitle("Sign Up");
-  return <Signup />;
-};
-
-const SigninWrapper = () => {
-  usePageTitle("Sign In");
-  return <Signin />;
-};
-
-export default function Router() {
+const Router: React.FC = () => {
   return (
     <AuthProvider>
       <InboxProvider>
@@ -116,42 +116,28 @@ export default function Router() {
           <PKRouter>
             <Layout>
               <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<HomeWrapper />} />
-
-                {/* User Routes */}
-                <Route
-                  path="/user/settings"
-                  element={<UserSettingsWrapper />}
-                />
-                <Route path="/user/stores" element={<UserStoresWrapper />} />
-                <Route path="/user/content" element={<UserContentWrapper />} />
-
-                {/* Store Routes */}
-                <Route path="/stores/create" element={<StoreCreateWrapper />} />
-                <Route
-                  path="/stores/view/:name"
-                  element={<StoreViewWrapper />}
-                />
-
-                {/* Resource Routes */}
-                <Route
-                  path="/resources/create"
-                  element={<ResourceCreateWrapper />}
-                />
-                <Route
-                  path="/resources/:store/:name"
-                  element={<ResourceViewWrapper />}
-                />
-
-                {/* Info Routes */}
-                <Route path="*" element={<NotFoundWrapper />} />
-                <Route path="/tos" element={<TOSWrapper />} />
-                <Route path="/privacy" element={<PrivacyWrapper />} />
-
-                {/* Auth Routes */}
-                <Route path="/auth/signup" element={<SignupWrapper />} />
-                <Route path="/auth/signin" element={<SigninWrapper />} />
+                {ROUTES.map(
+                  ({
+                    path,
+                    title,
+                    element: Component,
+                    protected: isProtected,
+                  }) => (
+                    <Route
+                      key={path}
+                      path={path}
+                      element={
+                        isProtected ? (
+                          <ProtectedRoute>
+                            {withPageTitle(Component, title)}
+                          </ProtectedRoute>
+                        ) : (
+                          withPageTitle(Component, title)
+                        )
+                      }
+                    />
+                  ),
+                )}
               </Routes>
             </Layout>
           </PKRouter>
@@ -159,4 +145,6 @@ export default function Router() {
       </InboxProvider>
     </AuthProvider>
   );
-}
+};
+
+export default Router;

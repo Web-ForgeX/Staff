@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import URLS from "@/Config/URLS";
-export default function USER_SETTINGS_Account_Info() {
+import { User } from "@supabase/supabase-js";
+export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   return (
@@ -23,8 +24,8 @@ export default function USER_SETTINGS_Account_Info() {
           <label className="cursor-pointer block relative">
             <Input type="file" accept="image/*" className="hidden" />
             <img
-              src={`${URLS.USER_AVATARS_BUCKET}/a253cd8a-3445-4641-b911-137125dc8e38.jpg`}
-              alt="Char"
+              src={`${URLS.USER_AVATARS_BUCKET}/${user.id}.jpg`}
+              alt={`${user?.user_metadata?.username}`}
               className="w-20 h-20 rounded-full object-cover border-border border-2"
             />
             {isHovered && (
@@ -44,7 +45,7 @@ export default function USER_SETTINGS_Account_Info() {
             <input
               type="text"
               className="w-full border border-border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              value="Char"
+              value={user?.user_metadata?.username}
             />
           </div>
 
@@ -56,7 +57,7 @@ export default function USER_SETTINGS_Account_Info() {
               <input
                 type="email"
                 className="w-full border border-border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                value="char@charcodes.online"
+                value={user?.email}
               />
             </div>
           </div>
