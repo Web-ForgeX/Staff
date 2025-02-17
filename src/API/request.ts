@@ -17,7 +17,7 @@ export default async function SendRequest({
 }: {
   method?: string;
   route: string;
-  body?: any;
+  body?: string | Record<string, unknown> | FormData | null;
   headers?: Record<string, string>;
 }) {
   try {
@@ -26,38 +26,37 @@ export default async function SendRequest({
 
     const authHeaders = await buildAuthHeaders();
 
-    // Define request options
     const requestOptions: RequestInit = {
       method,
       headers: {
         ...(body instanceof FormData
           ? {}
-          : { "Content-Type": "application/json" }), // Only set Content-Type for JSON
+          : { "Content-Type": "application/json" }),
         ...authHeaders,
         ...headers,
       },
       body:
-        body instanceof FormData ? body : body ? JSON.stringify(body) : null, // Set FormData directly
+        body instanceof FormData ? body : body ? JSON.stringify(body) : null,
     };
 
-    // Make the request
     const response = await fetch(
       `${baseUrl}${normalizedRoute}`,
       requestOptions,
     );
 
-    // Check if response is OK (status 200-299)
     if (!response.ok) {
       throw new Error(`Request failed with status ${response.status}`);
     }
 
-    // Return response data (try parsing JSON if possible)
     const contentType = response.headers.get("content-type");
     return contentType?.includes("application/json")
       ? response.json()
       : response.text();
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Request failed:", error);
-    return { error: error.message };
+    return {
+      error:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    };
   }
 }
