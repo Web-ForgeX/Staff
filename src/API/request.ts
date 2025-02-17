@@ -24,20 +24,21 @@ export default async function SendRequest({
     const normalizedRoute = route.startsWith("/") ? route : `/${route}`;
     const baseUrl = URLS.API;
 
-    // Build request options
-    const requestOptions: RequestInit & { body?: string } = {
+    const authHeaders = await buildAuthHeaders();
+
+    // Define request options
+    const requestOptions: RequestInit = {
       method,
       headers: {
-        "Content-Type": "application/json",
-        ...(await buildAuthHeaders()),
+        ...(body instanceof FormData
+          ? {}
+          : { "Content-Type": "application/json" }), // Only set Content-Type for JSON
+        ...authHeaders,
         ...headers,
       },
+      body:
+        body instanceof FormData ? body : body ? JSON.stringify(body) : null, // Set FormData directly
     };
-
-    // Add body for non-GET requests if provided
-    if (method !== "GET" && body) {
-      requestOptions.body = JSON.stringify(body);
-    }
 
     // Make the request
     const response = await fetch(
@@ -45,16 +46,18 @@ export default async function SendRequest({
       requestOptions,
     );
 
-    // Check if the response is ok (status in the range 200-299)
+    // Check if response is OK (status 200-299)
     if (!response.ok) {
-      return response.body;
+      throw new Error(`Request failed with status ${response.status}`);
     }
 
-    // Parse and return the JSON response
-    const data = await response.json();
-    return data;
+    // Return response data (try parsing JSON if possible)
+    const contentType = response.headers.get("content-type");
+    return contentType?.includes("application/json")
+      ? response.json()
+      : response.text();
   } catch (error) {
     console.error("Request failed:", error);
-    return error;
+    return { error: error.message };
   }
 }

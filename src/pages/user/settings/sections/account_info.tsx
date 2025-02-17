@@ -53,10 +53,9 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
           method: "POST",
           route: "/user/account/update/picture",
           body: formData,
-          headers: { "Content-Type": "multipart/form-data" },
         });
       }
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Failed to update user info:", error);
       setError(
