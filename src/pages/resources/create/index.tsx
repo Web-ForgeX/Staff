@@ -28,6 +28,7 @@ import {
   Users,
   Check,
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface UploadedFile {
   file: File;
@@ -390,10 +391,9 @@ export default function Resource_Create() {
                   <label htmlFor="description" className="text-sm font-medium">
                     Description
                   </label>
-                  <textarea
+                  <Textarea
                     id="description"
                     rows={4}
-                    className="w-full mt-1.5 rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     placeholder="Describe your resource..."
                   />
                 </div>
