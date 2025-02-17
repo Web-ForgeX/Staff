@@ -9,11 +9,11 @@ export default function USER_SETTINGS_Connections({ user }: { user: User }) {
 
   const handleDiscordConnect = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.linkIdentity({
         provider: "discord",
         options: {
           redirectTo: `${window.location.origin}/user/settings`,
-          scopes: "identify",
+          scopes: "identify guilds",
         },
       });
       if (error) throw error;
