@@ -1,41 +1,46 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Eye } from "lucide-react";
-import URLS from "@/Config/URLS";
+import SendRequest from "@/API/request";
 import { useDeleteModal } from "@/hooks/delete_confirm";
+import URLS from "@/Config/URLS";
+
+interface Store {
+  id: string;
+  name: string;
+  bio: string;
+  picture: string;
+  banner: string;
+  owner: string;
+}
+
+interface SectionUsersStoresProps {
+  username: string;
+  controls?: boolean;
+}
 
 export default function SECTION_Users_Stores({
+  username,
   controls = false,
-}: {
-  controls?: boolean;
-}) {
-  const loading = false;
+}: SectionUsersStoresProps) {
+  const [stores, setStores] = useState<Store[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const { openDeleteModal } = useDeleteModal();
-  const stores = [
-    {
-      id: "61eb8773-bcb6-424f-ba66-ebaf24c71e03",
-      name: "Tech Haven",
-      bio: "Your one-stop shop for the latest gadgets and tech accessories.",
-      picture: "tech-haven-avatar.jpg",
-      banner: "tech-haven-banner.jpg",
-      owner: 1, // assuming user with id 1 owns this store
-    },
-    {
-      id: "7122efd0-3347-49cc-9576-ab7c56d7ec10",
-      name: "Artisan Boutique",
-      bio: "Handcrafted items with love, from our artisans to your home.",
-      picture: "artisan-boutique-avatar.jpg",
-      banner: "artisan-boutique-banner.jpg",
-      owner: 2, // assuming user with id 2 owns this store
-    },
-    {
-      id: "d501b962-cf02-4cdd-a2b2-4c460565d28c",
-      name: "Eco Essentials",
-      bio: "Sustainable and eco-friendly products for a better planet.",
-      picture: "eco-essentials-avatar.jpg",
-      banner: "eco-essentials-banner.jpg",
-      owner: 4, // assuming user with id 4 owns this store
-    },
-  ];
+
+  useEffect(() => {
+    async function fetchStores() {
+      setLoading(true);
+      const response = await SendRequest({
+        method: "GET",
+        route: `/user/stores/name/${username}`,
+      });
+      if (!response.error && response.data) {
+        setStores(response.data);
+      }
+      setLoading(false);
+    }
+    if (username) fetchStores();
+  }, [username]);
 
   return (
     <>
@@ -71,13 +76,13 @@ export default function SECTION_Users_Stores({
               className="bg-gradient-to-br from-card to-accent/20 rounded-lg border-2 border-border overflow-hidden"
             >
               <img
-                src={`${URLS.STORE_BANNER_BUCKET}/${store.id}.png`}
+                src={`${URLS.STORE_BANNER_BUCKET}/${store.banner}`}
                 alt={`${store.name} banner`}
                 className="w-full h-24 object-cover border-b-2 border-border"
               />
               <div className="p-6 flex flex-col items-center text-center">
                 <img
-                  src={`${URLS.STORE_AVATAR_BUCKET}/${store.id}.png`}
+                  src={`${URLS.STORE_AVATAR_BUCKET}/${store.picture}`}
                   alt={store.name}
                   className="w-20 h-20 rounded-full object-cover -mt-12 border-2 border-border"
                 />
@@ -85,7 +90,6 @@ export default function SECTION_Users_Stores({
                 <p className="text-sm text-muted-foreground mb-4">
                   {store.bio}
                 </p>
-
                 {controls ? (
                   <div className="flex gap-2">
                     <Button

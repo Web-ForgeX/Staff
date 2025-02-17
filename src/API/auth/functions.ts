@@ -10,9 +10,8 @@ export async function UserSignUp({ username, email, password }: UserLogin) {
       data: {
         username: username,
         picture: "default.jpg",
-        stores: [],
         verified: false,
-        inbox_unread: 10,
+        inbox_unread: 0,
       },
     },
   });

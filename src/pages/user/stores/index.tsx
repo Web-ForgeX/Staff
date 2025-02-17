@@ -1,7 +1,10 @@
 import SECTION_Users_Stores from "@/sections/users_stores";
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
+import { useAuth } from "@/hooks/user";
 export default function User_Stores() {
+  const { user } = useAuth();
+  console.log(user?.user_metadata.username);
   return (
     <div className="max-w-6xl mx-auto pt-10 pb-10 px-4 sm:px-6">
       <div className="flex items-center justify-between">
@@ -13,7 +16,10 @@ export default function User_Stores() {
           <CirclePlus className="h-4" /> Create New Store
         </Button>
       </div>
-      <SECTION_Users_Stores controls={true} />
+      <SECTION_Users_Stores
+        controls={true}
+        username={user?.user_metadata.username}
+      />
     </div>
   );
 }
