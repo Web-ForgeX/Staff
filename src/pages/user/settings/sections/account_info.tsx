@@ -12,7 +12,7 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
   const [email, setEmail] = useState(user?.email || "");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>(
-    `${URLS.USER_AVATARS_BUCKET}/${user.id}.png`,
+    `${URLS.USER_AVATARS_BUCKET}/${user?.user_metadata?.picture}`,
   );
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
