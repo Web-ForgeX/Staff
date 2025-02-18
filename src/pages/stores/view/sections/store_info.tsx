@@ -1,16 +1,53 @@
-import URLS from "@/Config/URLS";
 import { Package, Users } from "lucide-react";
+import URLS from "@/Config/URLS";
 
-export default function STORE_VIEW_Store_Info() {
-  const store = {
-    name: "Sample Store",
-    bio: "This is a short description of the store.",
-    banner: "f27fa635-83f5-490d-bb02-23934ae4bec6.jpg",
-    picture: "a5781f2d-4503-456e-a739-6d637efc93a9.png",
-    resources: Array(5).fill({}),
-  };
+import { Store } from "@/API/stores/types";
 
-  const members = Array(10).fill({});
+export default function STORE_VIEW_Store_Info({
+  store,
+}: {
+  store: Store | null;
+}) {
+  if (!store) {
+    return (
+      <>
+        {/* Skeleton Banner */}
+        <div className="relative h-32 sm:h-48 md:h-56 lg:h-64 w-full">
+          <div className="w-full h-full bg-muted animate-pulse" />
+        </div>
+
+        {/* Skeleton Profile Info */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 md:-mt-20 relative z-10">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 md:gap-8">
+            {/* Avatar Skeleton */}
+            <div className="flex-shrink-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-muted animate-pulse" />
+            </div>
+
+            <div className="text-center sm:text-left flex-grow space-y-2 sm:space-y-3 w-full">
+              {/* Name Skeleton */}
+              <div className="h-8 w-48 mx-auto sm:mx-0 bg-muted animate-pulse rounded" />
+
+              {/* Bio Skeleton */}
+              <div className="space-y-2 max-w-2xl">
+                <div className="h-4 w-full bg-muted animate-pulse rounded" />
+                <div className="h-4 w-full bg-muted animate-pulse rounded" />
+                <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+              </div>
+
+              {/* Stats Skeleton */}
+              <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
+                <div className="h-8 w-24 bg-muted animate-pulse rounded" />
+                <div className="h-8 w-24 bg-muted animate-pulse rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const { members } = store;
 
   return (
     <>

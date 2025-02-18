@@ -1,65 +1,21 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import STORE_VIEW_Store_Info from "./sections/store_info";
 import STORE_VIEW_Store_Members from "./sections/store_members";
 import STORE_VIEW_Store_Settings from "./sections/store_settings";
 import { Package, Users, Settings, Plus } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-
-const sampleResources = [
-  {
-    title: "Getting Started Guide",
-    description: "Learn the basics of our platform",
-    author: "Development Team",
-    version: "1.0",
-    link: "/guides/getting-started",
-    image: {
-      src: "https://placehold.co/600x400",
-      alt: "Getting Started Guide",
-    },
-  },
-  {
-    title: "API Documentation",
-    description: "Complete API reference and examples",
-    author: "API Team",
-    version: "2.1",
-    link: "/docs/api",
-    image: {
-      src: "https://placehold.co/600x400",
-      alt: "API Documentation",
-    },
-  },
-  {
-    title: "Component Library",
-    description: "UI components and design system",
-    author: "Design Team",
-    version: "3.2",
-    link: "/components",
-    image: {
-      src: "https://placehold.co/600x400",
-      alt: "Component Library",
-    },
-  },
-  {
-    title: "Best Practices",
-    description: "Tips and recommendations for optimal usage",
-    author: "Architecture Team",
-    version: "1.5",
-    link: "/guides/best-practices",
-    image: {
-      src: "https://placehold.co/600x400",
-      alt: "Best Practices Guide",
-    },
-  },
-];
-
 import SECTION_Resource_Card_Grid from "@/sections/resource_card_grid";
+import SendRequest from "@/API/request";
+import { Store } from "@/API/stores/types";
 
 export default function Store_View() {
-  const owner = true;
+  const { name } = useParams();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("resources");
+  const [activeTab, setActiveTab] = useState<string>("resources");
+  const [storeData, setStoreData] = useState<Store | null>(null);
+  const owner = true;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -72,11 +28,24 @@ export default function Store_View() {
     }
   }, [location.search]);
 
+  useEffect(() => {
+    async function fetchStoreData() {
+      const response = await SendRequest({
+        method: "GET",
+        route: `/store/${name}`,
+      });
+      if (!response.error) {
+        setStoreData(response.data);
+      }
+    }
+    fetchStoreData();
+  }, [name]);
+
   return (
     <div>
       {/* Full width banner */}
       <div className="w-full">
-        <STORE_VIEW_Store_Info />
+        <STORE_VIEW_Store_Info store={storeData} />
       </div>
 
       <div className="mt-4 mx-8 md:mx-20 pb-10">
@@ -101,7 +70,7 @@ export default function Store_View() {
               <Button>
                 <Link
                   className="flex items-center gap-2"
-                  to={`/resources/create?store=1`}
+                  to={`/resources/create?store=${storeData?.id}`}
                 >
                   <Plus size={16} /> Add Resource
                 </Link>
@@ -109,18 +78,20 @@ export default function Store_View() {
             </div>
             <div className="max-w-[95%] md:max-w-full mx-auto">
               <SECTION_Resource_Card_Grid
-                resources={sampleResources}
+                resources={storeData?.resources}
                 showViewAll={false}
                 per_row={4}
-                title="Sample Store Resources"
+                title="Store Resources"
               />
             </div>
           </TabsContent>
+
           <TabsContent value="members" className="text-center">
             <div className="mt-4">
               <STORE_VIEW_Store_Members />
             </div>
           </TabsContent>
+
           {owner && (
             <TabsContent value="settings" className="text-center">
               <div className="mt-4">
