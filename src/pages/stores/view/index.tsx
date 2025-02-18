@@ -9,13 +9,15 @@ import { Button } from "@/components/ui/button";
 import SECTION_Resource_Card_Grid from "@/sections/resource_card_grid";
 import SendRequest from "@/API/request";
 import { Store } from "@/API/stores/types";
+import { useAuth } from "@/hooks/user";
 
 export default function Store_View() {
   const { name } = useParams();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<string>("resources");
   const [storeData, setStoreData] = useState<Store | null>(null);
-  const owner = true;
+  const [owner, setOwner] = useState<boolean>(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -36,6 +38,9 @@ export default function Store_View() {
       });
       if (!response.error) {
         setStoreData(response.data);
+        if (response.data.owner === user?.id) {
+          setOwner(true);
+        }
       }
     }
     fetchStoreData();
@@ -67,14 +72,17 @@ export default function Store_View() {
           <TabsContent value="resources" className="mt-4">
             <div className="flex justify-between items-center max-w-[95%] md:max-w-full mx-auto mb-4">
               <div></div>
-              <Button>
-                <Link
-                  className="flex items-center gap-2"
-                  to={`/resources/create?store=${storeData?.id}`}
-                >
-                  <Plus size={16} /> Add Resource
-                </Link>
-              </Button>
+
+              {owner && (
+                <Button>
+                  <Link
+                    className="flex items-center gap-2"
+                    to={`/resources/create?store=${storeData?.id}`}
+                  >
+                    <Plus size={16} /> Add Resource
+                  </Link>
+                </Button>
+              )}
             </div>
             <div className="max-w-[95%] md:max-w-full mx-auto">
               <SECTION_Resource_Card_Grid
@@ -85,10 +93,13 @@ export default function Store_View() {
               />
             </div>
           </TabsContent>
-
           <TabsContent value="members" className="text-center">
             <div className="mt-4">
-              <STORE_VIEW_Store_Members />
+              <STORE_VIEW_Store_Members
+                memberIds={storeData?.members || []}
+                storeOwnerId={storeData?.owner}
+                isOwner={owner}
+              />
             </div>
           </TabsContent>
 
