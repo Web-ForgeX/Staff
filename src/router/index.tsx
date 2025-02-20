@@ -5,10 +5,8 @@ import { useEffect } from "react";
 import Layout from "@/layout";
 import HomePage from "@/pages/home";
 import User_Settings from "@/pages/user/settings";
-import User_Stores from "@/pages/user/stores";
 import User_Content from "@/pages/user/content";
-import Store_Create from "@/pages/stores/create";
-import Store_View from "@/pages/stores/view";
+import User_View from "@/pages/user/view";
 import Resource_Create from "@/pages/resources/create";
 import Resource_View from "@/pages/resources/view";
 import Not_Found from "@/pages/404";
@@ -62,26 +60,16 @@ const ROUTES: RouteConfig[] = [
     protected: true,
   },
   {
-    path: "/user/stores",
-    title: "My Stores",
-    element: User_Stores,
-    protected: true,
-  },
-  {
     path: "/user/content",
     title: "My Content",
     element: User_Content,
     protected: true,
   },
-
-  // Store Routes
   {
-    path: "/stores/create",
-    title: "Create Store",
-    element: Store_Create,
-    protected: true,
+    path: "/user/view/:id",
+    title: "View User",
+    element: User_View,
   },
-  { path: "/stores/view/:name", title: "Store Details", element: Store_View },
 
   // Resource Routes
   {

@@ -10,6 +10,9 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [username, setUsername] = useState(user?.user_metadata?.username || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [tebexWallet, setTebexWallet] = useState(
+    user?.user_metadata?.tebexWallet || "",
+  ); // New state for Tebex Wallet
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>(
     `${URLS.USER_AVATARS_BUCKET}/${user?.user_metadata?.picture}`,
@@ -45,6 +48,14 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
         });
       }
 
+      if (tebexWallet !== user?.user_metadata?.tebexWallet) {
+        await SendRequest({
+          method: "POST",
+          route: "/user/account/update/tebex-wallet",
+          body: { tebexWallet },
+        });
+      }
+
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -55,7 +66,6 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
           body: formData,
         });
       }
-      // window.location.reload();
     } catch (error) {
       console.error("Failed to update user info:", error);
       setError(
@@ -128,6 +138,19 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+          </div>
+
+          {/* New Tebex Wallet input */}
+          <div>
+            <label className="text-sm font-medium text-muted-foreground">
+              Tebex Wallet
+            </label>
+            <input
+              type="text"
+              className="w-full border border-border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              value={tebexWallet}
+              onChange={(e) => setTebexWallet(e.target.value)}
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,13 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import SendRequest from "@/API/request";
 
 type Message = {
   id: number;
@@ -72,36 +79,39 @@ const InboxDisplay = () => {
 
 export default function InboxProvider({ children }: { children: ReactNode }) {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
-  const [inboxMessages, setInboxMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: "New message!",
-      detailed: "This is a test message.",
-      createdAt: "2025-02-10",
-      read: false,
-    },
-    {
-      id: 2,
-      text: "Another message",
-      detailed: "Another detailed text.",
-      createdAt: "2025-02-09",
-      read: true,
-    },
-    {
-      id: 3,
-      text: "Another message",
-      detailed: "Another detailed text.",
-      createdAt: "2025-02-09",
-      read: true,
-    },
-  ]);
+  const [inboxMessages, setInboxMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    async function FetchInbox() {
+      const response = await SendRequest({
+        method: "GET",
+        route: "/user/inbox",
+      });
+      if (!response.error) {
+        setInboxMessages(response.data);
+      }
+    }
+
+    FetchInbox();
+  }, [isInboxOpen]);
 
   const toggleInboxPopup = () => setIsInboxOpen(!isInboxOpen);
 
-  const handleMarkAsRead = (id: number) => {
-    setInboxMessages((prevMessages) =>
-      prevMessages.map((msg) => (msg.id === id ? { ...msg, read: true } : msg)),
-    );
+  const handleMarkAsRead = async (id: number) => {
+    // Make API request to mark the message as read
+    const response = await SendRequest({
+      method: "POST",
+      route: `/user/inbox/mark-read/${id}`,
+    });
+
+    // If the API request is successful, update the state to reflect the change
+    if (!response.error) {
+      setInboxMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === id ? { ...msg, read: true } : msg,
+        ),
+      );
+    }
   };
 
   return (

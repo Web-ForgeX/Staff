@@ -1,6 +1,6 @@
 import Verified from "../../assets/verified.svg";
 
-export default function VerifiedBadge({ className }: { className: string }) {
+export default function VerifiedBadge({ className }: { className?: string }) {
   return (
     <div className="relative inline-block group">
       <img src={Verified} className={`${className} cursor-help`} />

@@ -7,8 +7,6 @@ import {
   Store,
   ImagePlus,
   Wallet,
-  Plus,
-  X,
   Save,
   ImageIcon,
 } from "lucide-react";
@@ -22,18 +20,14 @@ import {
 } from "@/components/ui/card";
 import { Pie, PieChart } from "recharts";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartConfig,
 } from "@/components/ui/chart";
 import { useState, useEffect } from "react";
-
-const initialUsers = [
-  { id: 1, name: "John Doe", walletRef: "TEBEX-123", percentage: 40 },
-  { id: 2, name: "Jane Smith", walletRef: "TEBEX-456", percentage: 35 },
-  { id: 3, name: "Mike Johnson", walletRef: "TEBEX-789", percentage: 25 },
-];
+import { Store as StoreType } from "@/API/stores/types";
+import SendRequest from "@/API/request";
 
 const chartConfig = {
   percentage: { label: "Percentage" },
@@ -42,6 +36,7 @@ const chartConfig = {
   user3: { label: "Mike Johnson", color: "hsl(var(--chart-3))" },
 } satisfies ChartConfig;
 
+// ImageUploadBox Component
 const ImageUploadBox = ({
   label,
   subtitle,
@@ -67,41 +62,76 @@ const ImageUploadBox = ({
   </div>
 );
 
-export default function STORE_VIEW_Store_Settings() {
+// Types
+interface Member {
+  id: number;
+  username: string;
+  picture?: string;
+  verified: boolean;
+  percentage: number;
+}
+
+// Store Settings Component
+export default function StoreViewStoreSettings({
+  store,
+}: {
+  store: StoreType;
+}) {
   const { openDeleteModal } = useDeleteModal();
-  const [users, setUsers] = useState(initialUsers);
+  const [members, setMembers] = useState<Member[]>([]);
   const [totalPercentage, setTotalPercentage] = useState(100);
   const [hasError, setHasError] = useState(false);
-  const [newUser, setNewUser] = useState({ name: "", walletRef: "" });
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      if (!store.members.length) {
+        setMembers([]);
+        return;
+      }
+
+      try {
+        const idsString = store.members.join(",");
+        const response = await SendRequest({
+          method: "GET",
+          route: `/user/batch?id=${idsString}`,
+        });
+
+        if (response.error) {
+          throw new Error(response.error);
+        }
+
+        if (response.data) {
+          const membersWithPercentage = response.data.map((member: Member) => ({
+            ...member,
+            percentage: 100 / response.data.length,
+          }));
+          setMembers(membersWithPercentage);
+        }
+      } catch (error) {
+        console.error("Failed to fetch members:", error);
+      }
+    };
+
+    fetchMembers();
+  }, [store.members]);
 
   const handlePercentageChange = (id: number, value: string) => {
     const newValue =
       value === "" ? 0 : Math.min(100, Math.max(0, parseInt(value) || 0));
-    const updatedUsers = users.map((user) =>
-      user.id === id ? { ...user, percentage: newValue } : user,
+    setMembers(
+      members.map((user) =>
+        user.id === id ? { ...user, percentage: newValue } : user,
+      ),
     );
-    setUsers(updatedUsers);
-  };
-
-  const addNewUser = () => {
-    if (newUser.name && newUser.walletRef) {
-      const newId = Math.max(...users.map((u) => u.id)) + 1;
-      setUsers([...users, { ...newUser, id: newId, percentage: 0 }]);
-      setNewUser({ name: "", walletRef: "" });
-    }
-  };
-
-  const removeUser = (id: number) => {
-    setUsers(users.filter((user) => user.id !== id));
   };
 
   useEffect(() => {
-    const total = users.reduce((sum, user) => sum + user.percentage, 0);
+    const total = members.reduce((sum, user) => sum + user.percentage, 0);
     setTotalPercentage(total);
     setHasError(total !== 100);
-  }, [users]);
+  }, [members]);
 
-  const generateShades = (_baseColor: string, count: number) => {
+  const generateShades = (count: number) => {
     const shades = [];
     const step = 15 / count;
     for (let i = 0; i < count; i++) {
@@ -111,13 +141,14 @@ export default function STORE_VIEW_Store_Settings() {
     return shades;
   };
 
-  const shades = generateShades("#2CB67D", users.length);
-
-  const chartData = users.map((user, index) => ({
-    name: user.name,
+  const shades = generateShades(members.length);
+  const chartData = members.map((user, index) => ({
+    name: user.username,
     percentage: user.percentage,
     fill: shades[index],
   }));
+
+  if (!store) return;
 
   return (
     <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 space-y-6">
@@ -140,14 +171,11 @@ export default function STORE_VIEW_Store_Settings() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Store Name</label>
-                <Input value="Sample Store" />
+                <Input value={store.name} />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Bio</label>
-                <Textarea
-                  value="This is a short description of the store."
-                  className="h-24"
-                />
+                <Textarea value={store.bio} className="h-24" />
               </div>
             </div>
           </CardContent>
@@ -242,15 +270,17 @@ export default function STORE_VIEW_Store_Settings() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {users.map((user) => (
+              {members.map((user) => (
                 <div
                   key={user.id}
                   className="flex items-center gap-4 p-3 border rounded-lg hover:border-primary transition-colors"
                 >
                   <div className="flex-grow">
-                    <div className="font-medium text-primary">{user.name}</div>
+                    <div className="font-medium text-primary">
+                      {user.username}
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                      {user.walletRef}
+                      PLACEHOLDER
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -265,39 +295,9 @@ export default function STORE_VIEW_Store_Settings() {
                       max="100"
                     />
                     <span className="text-sm">%</span>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => removeUser(user.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
                 </div>
               ))}
-
-              {/* Add New User */}
-              <div className="space-y-4 pt-4 border-t">
-                <h4 className="font-medium">Add New Team Member</h4>
-                <div className="space-y-2">
-                  <Input
-                    placeholder="Name"
-                    value={newUser.name}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, name: e.target.value })
-                    }
-                  />
-                </div>
-                <Button
-                  variant="default"
-                  onClick={addNewUser}
-                  disabled={!newUser.name}
-                  className="w-full"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Team Member
-                </Button>
-              </div>
 
               {hasError && (
                 <p className="text-sm font-medium text-destructive mt-4">
@@ -336,8 +336,9 @@ export default function STORE_VIEW_Store_Settings() {
               Total Distribution: {totalPercentage}%
             </div>
             <div className="leading-none text-muted-foreground">
-              Split between <span className="text-primary">{users.length}</span>{" "}
-              team members
+              Split between{" "}
+              <span className="text-primary">{members.length}</span> team
+              members
             </div>
           </CardFooter>
         </Card>
@@ -374,9 +375,9 @@ export default function STORE_VIEW_Store_Settings() {
               variant="destructive"
               onClick={() =>
                 openDeleteModal(
-                  "Delete Sample Store",
+                  `Delete ${store.name}`,
                   "Are you sure you want to delete this store? This action cannot be undone.",
-                  "Sample Store",
+                  store.name,
                   () => {
                     console.log("User deleted!");
                   },

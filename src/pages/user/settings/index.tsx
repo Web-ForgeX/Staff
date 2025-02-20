@@ -1,4 +1,5 @@
 import USER_SETTINGS_Account_Info from "./sections/account_info";
+import USER_SETTINGS_Public_Profile from "./sections/public_profile";
 import USER_SETTINGS_Session_Controls from "./sections/session_controls";
 import USER_SETTINGS_Connections from "./sections/connections";
 
@@ -12,6 +13,7 @@ export default function User_Settings() {
         Account Settings
       </h1>
       <USER_SETTINGS_Account_Info user={user} />
+      <USER_SETTINGS_Public_Profile user={user} />
       <USER_SETTINGS_Session_Controls />
       <USER_SETTINGS_Connections user={user} />
     </div>
