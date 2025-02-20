@@ -12,7 +12,7 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
   const [email, setEmail] = useState(user?.email || "");
   const [tebexWallet, setTebexWallet] = useState(
     user?.user_metadata?.tebexWallet || "",
-  ); // New state for Tebex Wallet
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>(
     `${URLS.USER_AVATARS_BUCKET}/${user?.user_metadata?.picture}`,
@@ -140,7 +140,6 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
             </div>
           </div>
 
-          {/* New Tebex Wallet input */}
           <div>
             <label className="text-sm font-medium text-muted-foreground">
               Tebex Wallet
@@ -154,7 +153,13 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
           </div>
         </div>
       </div>
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-between mt-4">
+        <Button
+          onClick={() => window.open(`/user/view/${user.id}`, "_blank")}
+          variant="secondary"
+        >
+          View Account
+        </Button>
         <Button onClick={handleSaveChanges} disabled={isSaving}>
           {isSaving ? "Saving..." : "Save Changes"}
         </Button>

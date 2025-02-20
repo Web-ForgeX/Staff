@@ -4,8 +4,10 @@ import SECTION_Resource_Card_Grid from "@/sections/resource_card_grid";
 import SendRequest from "@/API/request";
 import { useEffect, useState } from "react";
 import Not_Found from "@/pages/404";
+import { User } from "@/API/Types";
+
 export default function User_View() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState(false);
   const { id } = useParams();
 
@@ -16,16 +18,21 @@ export default function User_View() {
         route: `/user/id/${id}`,
       });
 
-      console.log(response.data.error);
       if (!response.data.error) {
         setUser(response.data.data);
-      } else if (response.data.error) {
+      } else {
         setError(true);
       }
     }
 
     FetchUser();
   }, [id]);
+
+  useEffect(() => {
+    if (user) {
+      document.title = `Forgex | View ${user.username}`;
+    }
+  }, [user]);
 
   if (error) return <Not_Found />;
   return (
