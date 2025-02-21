@@ -22,6 +22,17 @@ export default function USER_SETTINGS_Connections({ user }: { user: User }) {
     }
   };
 
+  const handleDiscordDisconnect = async () => {
+    try {
+      if (!discordIdentity) return;
+      const { error } = await supabase.auth.unlinkIdentity(discordIdentity);
+      if (error) throw error;
+      window.location.reload();
+    } catch (error) {
+      console.error("Error connecting Discord:", error);
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border-2 border-border p-6 mb-8">
       <h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
@@ -37,6 +48,7 @@ export default function USER_SETTINGS_Connections({ user }: { user: User }) {
           <Button
             variant="secondary"
             className="w-full sm:w-auto flex items-center gap-2 px-4 py-2"
+            onClick={handleDiscordDisconnect}
           >
             <img
               src={discordIdentity?.identity_data?.avatar_url}
