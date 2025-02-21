@@ -48,29 +48,29 @@ const InboxDisplay = () => {
           </Button>
         </div>
         <div className="mt-4 space-y-4 max-h-80 scrollbar scrollbar-thumb-rounded-sm scrollbar-thumb-primary scrollbar-track-background scrollbar-w-1.5 overflow-y-scroll overflow-x-hidden pr-4">
-          {inboxMessages.map((message: Message) => (
-            <div
-              key={message.id}
-              className={`p-4 rounded-lg bg-secondary ${message.read ? "" : "border-2 border-primary"}`}
-            >
-              <p className="text-sm text-gray-500">{message.createdAt}</p>
-              <p
-                className={`text-lg ${message.read ? "font-normal" : "font-bold"}`}
+          {inboxMessages.length === 0 ? (
+            <p className="text-gray-500 text-center">Your inbox is empty</p>
+          ) : (
+            inboxMessages.map((message) => (
+              <div
+                key={message.id}
+                className={`p-3 border-b ${message.read ? "bg-gray-100" : "bg-white"}`}
               >
-                {message.text}
-              </p>
-              <p className="text-sm text-gray-600">{message.detailed}</p>
-              {!message.read && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleMarkAsRead(message.id)}
-                >
-                  Mark as Read
-                </Button>
-              )}
-            </div>
-          ))}
+                <p className="text-sm text-gray-500">{message.createdAt}</p>
+                <p className="font-medium">{message.text}</p>
+                <p className="text-sm text-gray-600">{message.detailed}</p>
+                {!message.read && (
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => handleMarkAsRead(message.id)}
+                  >
+                    Mark as Read
+                  </Button>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -104,7 +104,6 @@ export default function InboxProvider({ children }: { children: ReactNode }) {
       route: `/user/inbox/mark-read/${id}`,
     });
 
-    // If the API request is successful, update the state to reflect the change
     if (!response.error) {
       setInboxMessages((prevMessages) =>
         prevMessages.map((msg) =>
