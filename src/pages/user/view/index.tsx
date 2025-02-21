@@ -9,13 +9,13 @@ import { User } from "@/API/Types";
 export default function User_View() {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState(false);
-  const { id } = useParams();
+  const { name } = useParams();
 
   useEffect(() => {
     async function FetchUser() {
       const response = await SendRequest({
         method: "GET",
-        route: `/user/id/${id}`,
+        route: `/user/name/${name}`,
       });
 
       if (!response.data.error) {
@@ -26,7 +26,7 @@ export default function User_View() {
     }
 
     FetchUser();
-  }, [id]);
+  }, [name]);
 
   useEffect(() => {
     if (user) {

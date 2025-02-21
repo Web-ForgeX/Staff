@@ -155,7 +155,9 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
       </div>
       <div className="flex justify-between mt-4">
         <Button
-          onClick={() => window.open(`/user/view/${user.id}`, "_blank")}
+          onClick={() =>
+            window.open(`/user/view/${user.user_metadata.username}`, "_blank")
+          }
           variant="secondary"
         >
           View Account

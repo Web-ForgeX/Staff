@@ -66,7 +66,7 @@ const ROUTES: RouteConfig[] = [
     protected: true,
   },
   {
-    path: "/user/view/:id",
+    path: "/user/view/:name",
     title: "View User",
     element: User_View,
   },
