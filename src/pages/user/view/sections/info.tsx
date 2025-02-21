@@ -66,13 +66,13 @@ export default function USER_VIEW_User_Info({ user }: { user: User | null }) {
           </div>
           <div className="text-center sm:text-left flex-grow space-y-2">
             <div className="flex flex-col gap-2">
-              <div className="inline-flex">
-                <span className="bg-background/95 border-2 border-border backdrop-blur-sm rounded-full px-4 py-1.5 text-xl sm:text-2xl md:text-3xl font-bold text-primary">
+              <div className="inline-flex justify-center sm:justify-start">
+                <span className="sm:bg-background/95 sm:border-2 sm:border-border sm:backdrop-blur-sm sm:rounded-xl sm:px-4 sm:py-1.5 text-xl sm:text-2xl md:text-3xl font-bold text-primary">
                   {user.username}
                 </span>
               </div>
-              <div className="inline-flex">
-                <span className="bg-background/95 border-2 border-border backdrop-blur-sm rounded-full px-4 py-2 text-sm sm:text-base text-muted-foreground">
+              <div className="inline-flex justify-center sm:justify-start">
+                <span className="sm:bg-background/95 sm:border-2 sm:border-border sm:backdrop-blur-sm sm:rounded-xl sm:px-4 sm:py-2 text-sm sm:text-base text-muted-foreground">
                   {user.bio || "Nothing here yet...."}
                 </span>
               </div>
