@@ -15,11 +15,11 @@ export default function User_View() {
     async function FetchUser() {
       const response = await SendRequest({
         method: "GET",
-        route: `/user/name/${name}`,
+        route: `/user/name/${name?.toLowerCase()}`,
       });
 
       if (!response.data.error) {
-        setUser(response.data.data);
+        setUser(response.data);
       } else {
         setError(true);
       }

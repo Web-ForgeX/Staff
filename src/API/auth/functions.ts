@@ -8,7 +8,7 @@ export async function UserSignUp({ username, email, password }: UserLogin) {
     password,
     options: {
       data: {
-        username: username,
+        username: username.toLowerCase(),
         picture: "default.jpg",
         verified: false,
         inbox_unread: 0,

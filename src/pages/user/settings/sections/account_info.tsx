@@ -51,8 +51,8 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
       if (tebexWallet !== user?.user_metadata?.tebexWallet) {
         await SendRequest({
           method: "POST",
-          route: "/user/account/update/tebex-wallet",
-          body: { tebexWallet },
+          route: "/user/account/update/tebex_wallet",
+          body: { tebex_wallet: tebexWallet },
         });
       }
 
