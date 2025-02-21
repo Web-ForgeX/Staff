@@ -118,9 +118,9 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
             <label className="text-sm font-medium text-muted-foreground">
               Username
             </label>
-            <input
+            <Input
               type="text"
-              className="w-full border border-border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              className="px-3 py-2"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -131,9 +131,9 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
               Email
             </label>
             <div className="flex items-center gap-2">
-              <input
+              <Input
                 type="email"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                className=" px-3 py-2"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -144,9 +144,9 @@ export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
             <label className="text-sm font-medium text-muted-foreground">
               Tebex Wallet
             </label>
-            <input
+            <Input
               type="text"
-              className="w-full border border-border rounded-lg px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="Tebex Wallet"
               value={tebexWallet}
               onChange={(e) => setTebexWallet(e.target.value)}
             />
