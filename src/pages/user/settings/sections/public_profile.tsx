@@ -68,11 +68,11 @@ export default function USER_SETTINGS_Public_Profile({ user }: { user: User }) {
 
       <div className="flex flex-col gap-6 text-center sm:text-left">
         <div
-          className="relative w-full h-[150px]"
+          className="relative w-full h-[200px] overflow-hidden rounded-lg border-2 border-border"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <label className="cursor-pointer block relative">
+          <label className="cursor-pointer block relative w-full h-full">
             <Input
               type="file"
               accept="image/*"
@@ -82,12 +82,11 @@ export default function USER_SETTINGS_Public_Profile({ user }: { user: User }) {
             <img
               src={previewBanner}
               alt="Banner"
-              className="w-full h-full object-cover rounded-lg border-2 border-border"
+              className="w-full h-full object-cover"
             />
             {isHovered && (
-              <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center text-white text-sm border-2 border-primary">
-                <Camera className="w-4 h-4 mr-1" />
-                Change Banner
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-sm border-2 border-primary">
+                <Camera className="w-4 h-4 mr-1" /> Change Banner
               </div>
             )}
           </label>
