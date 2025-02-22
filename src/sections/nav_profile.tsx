@@ -55,7 +55,7 @@ export default function SECTION_Nav_Profile({ user }: { user: User }) {
       <Button
         variant="ghost"
         size="icon"
-        onClick={navigateTo("/user/stores")}
+        onClick={navigateTo("/user/resources")}
         className="p-1"
       >
         <Store className="w-5 h-5" />

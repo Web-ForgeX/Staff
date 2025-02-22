@@ -6,13 +6,17 @@ import URLS from "@/Config/URLS";
 import { User } from "@supabase/supabase-js";
 import SendRequest from "@/API/request";
 
-export default function USER_SETTINGS_Account_Info({ user }: { user: User }) {
+export default function USER_SETTINGS_Account_Info({
+  user,
+  additionalData,
+}: {
+  user: User;
+  additionalData: { tebex_wallet: string };
+}) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [username, setUsername] = useState(user?.user_metadata?.username || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [tebexWallet, setTebexWallet] = useState(
-    user?.user_metadata?.tebexWallet || "",
-  );
+  const [tebexWallet, setTebexWallet] = useState(additionalData?.tebex_wallet);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>(
     `${URLS.USER_AVATARS_BUCKET}/${user?.user_metadata?.picture}`,

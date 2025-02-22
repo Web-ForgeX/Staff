@@ -5,13 +5,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import SendRequest from "@/API/request";
 import { User } from "@supabase/supabase-js";
+import URLS from "@/Config/URLS";
 
-export default function USER_SETTINGS_Public_Profile({ user }: { user: User }) {
+export default function USER_SETTINGS_Public_Profile({
+  user,
+  additionalData,
+}: {
+  user: User;
+  additionalData: { bio: string; banner: string };
+}) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [bio, setBio] = useState(user?.user_metadata?.bio || "");
+  const [bio, setBio] = useState(additionalData?.bio || "");
   const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
   const [previewBanner, setPreviewBanner] = useState<string>(
-    `https://nijvzcdijjnlnkjbulkf.supabase.co/storage/v1/object/public/stores/banners/default.jpg`,
+    `${URLS.USER_BANNER_BUCKET}/${additionalData.banner || "default.jpg"}`,
   );
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

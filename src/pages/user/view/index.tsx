@@ -19,6 +19,7 @@ export default function User_View() {
       });
 
       if (!response.data.error) {
+        console.log(response.data);
         setUser(response.data);
       } else {
         setError(true);

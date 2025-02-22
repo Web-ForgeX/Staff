@@ -48,7 +48,7 @@ export default function USER_VIEW_User_Info({ user }: { user: User | null }) {
       {/* Banner Container */}
       <div className="relative h-32 sm:h-48 md:h-56 lg:h-64 w-full">
         <img
-          src={`${URLS.USER_AVATARS_BUCKET}/${user.picture}`}
+          src={`${URLS.USER_BANNER_BUCKET}/${user.banner || "default.jpg"}`}
           alt="Store Banner"
           className="w-full h-full object-cover"
         />
@@ -61,7 +61,7 @@ export default function USER_VIEW_User_Info({ user }: { user: User | null }) {
             <img
               src={`${URLS.USER_AVATARS_BUCKET}/${user.picture}`}
               alt={user.username}
-              className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full border-4 border-background"
+              className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full border-4 border-border"
             />
           </div>
           <div className="text-center sm:text-left flex-grow space-y-2">
