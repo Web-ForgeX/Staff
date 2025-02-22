@@ -42,7 +42,7 @@ export default function User_View() {
       <div className="pt-10 pb-30">
         <SECTION_Resource_Card_Grid
           resources={[]}
-          title="Users Resources"
+          title="Resources"
           showViewAll={false}
         />
       </div>

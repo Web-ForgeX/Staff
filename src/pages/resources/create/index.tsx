@@ -53,7 +53,6 @@ export default function Resource_Create() {
   const [displayType, setDisplayType] = useState<"grid" | "list">("grid");
   const [images, setImages] = useState<string[]>([]);
   const [draggedImage, setDraggedImage] = useState<number | null>(null);
-  const [selectedStore, setSelectedStore] = useState<string>("");
   const [features, setFeatures] = useState<string[]>([""]);
   const [requirements, setRequirements] = useState<string[]>([""]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -71,21 +70,6 @@ export default function Resource_Create() {
   const [selectedServer, setSelectedServer] = useState<string>("");
   const [selectedRole, setSelectedRole] = useState<string>("");
 
-  // Mock data - would come from API in real app
-  const stores = [
-    {
-      id: "1",
-      name: "PixelCraft Studios",
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=50&h=50",
-    },
-    {
-      id: "2",
-      name: "GameForge",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=50&h=50",
-    },
-  ];
 
   const discordServers: DiscordServer[] = [
     {
@@ -329,50 +313,7 @@ export default function Resource_Create() {
             </div>
 
             <div className="space-y-6">
-              {/* Store Selection */}
-              <div className="space-y-4">
-                <label className="text-sm font-medium">Select Store</label>
-                <Select value={selectedStore} onValueChange={setSelectedStore}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a store">
-                      {selectedStore ? (
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={
-                              stores.find((s) => s.id === selectedStore)?.avatar
-                            }
-                            alt=""
-                            className="w-6 h-6 rounded-full"
-                          />
-                          <span>
-                            {stores.find((s) => s.id === selectedStore)?.name}
-                          </span>
-                        </div>
-                      ) : (
-                        "Select a store"
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {stores.map((store) => (
-                      <SelectItem
-                        key={store.id}
-                        value={store.id}
-                        className="flex items-center gap-3 p-2"
-                      >
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={store.avatar}
-                            alt={store.name}
-                            className="w-6 h-6 rounded-full"
-                          />
-                          <span>{store.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              
 
               {/* Basic Information */}
               <div className="space-y-4">
@@ -627,7 +568,7 @@ export default function Resource_Create() {
               {/* Display Type Selection */}
               <div className="space-y-4">
                 <label className="text-sm font-medium">Display Type</label>
-                <div className="flex gap-4">
+                <div className="flex gap-4 mt-2">
                   <button
                     onClick={() => setDisplayType("grid")}
                     className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all ${
