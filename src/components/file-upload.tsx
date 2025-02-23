@@ -21,7 +21,10 @@ interface FileUploadProps {
   setUploadedFiles: React.Dispatch<React.SetStateAction<UploadedFile[]>>;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ uploadedFiles, setUploadedFiles }) => {
+const FileUpload: React.FC<FileUploadProps> = ({
+  uploadedFiles,
+  setUploadedFiles,
+}) => {
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -94,7 +97,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ uploadedFiles, setUploadedFiles
                   or click to browse from your computer
                 </p>
               </div>
-              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 Select Files
               </Button>
               <input

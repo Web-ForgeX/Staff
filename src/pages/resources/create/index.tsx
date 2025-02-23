@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Grid2X2, LayoutGrid, MessageSquare, Globe, Book, RefreshCw } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Grid2X2,
+  LayoutGrid,
+  MessageSquare,
+  Globe,
+  Book,
+  RefreshCw,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import ImageSorting from "@/components/image-sorting";
 import SupportOption from "@/components/support-option";
@@ -16,6 +24,8 @@ interface UploadedFile {
 }
 
 export default function Resource_Create() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | boolean>(false);
   const [displayType, setDisplayType] = useState<"grid" | "list">("grid");
   const [images, setImages] = useState<File[]>([]);
   const [features, setFeatures] = useState<string[]>([""]);
@@ -50,26 +60,28 @@ export default function Resource_Create() {
               guild_id: selectedServer,
               role_id: selectedRole,
             }
-          : null
-      )
+          : null,
+      ),
     );
     formData.set("features", JSON.stringify(features));
     formData.set("requirements", JSON.stringify(requirements));
     formData.set(
       "support_docs",
-      supportOptions.documentation.enabled ? supportOptions.documentation.value : ""
+      supportOptions.documentation.enabled
+        ? supportOptions.documentation.value
+        : "",
     );
     formData.set(
       "support_discord_server",
-      supportOptions.discord.enabled ? supportOptions.discord.value : ""
+      supportOptions.discord.enabled ? supportOptions.discord.value : "",
     );
     formData.set(
       "support_website",
-      supportOptions.website.enabled ? supportOptions.website.value : ""
+      supportOptions.website.enabled ? supportOptions.website.value : "",
     );
     formData.set(
       "support_changelog",
-      supportOptions.updates.enabled ? supportOptions.updates.value : ""
+      supportOptions.updates.enabled ? supportOptions.updates.value : "",
     );
     for (let i = 0; i < images.length; i++) {
       formData.set("image" + i + 1, images[i]);
@@ -84,6 +96,7 @@ export default function Resource_Create() {
   async function handleCreateResource() {
     const formData = buildFormData();
     try {
+      setLoading(true);
       const d = await SendRequest({
         route: "resource/create",
         method: "POST",
@@ -91,11 +104,13 @@ export default function Resource_Create() {
         headers: await buildAuthHeaders(),
       });
       if (d.error) {
-        throw new Error(d.error);
+        setLoading(false);
+        setError(d.error)
       } else {
-        console.log(d);
+        setLoading(false);
       }
     } catch (error) {
+      setLoading(false);
       console.error(error);
     }
   }
@@ -107,10 +122,18 @@ export default function Resource_Create() {
           <div className="space-y-8">
             <div>
               <h1 className="text-3xl font-bold">Create New Resource</h1>
-              <p className="text-muted-foreground mt-2">Create a new resource</p>
+              <p className="text-muted-foreground mt-2">
+                Create a new resource
+              </p>
             </div>
 
             <div className="space-y-6">
+            {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
               {/* Basic Information */}
               <div className="space-y-4">
                 <div>
@@ -162,7 +185,11 @@ export default function Resource_Create() {
               </div>
 
               {/* Features */}
-              <ListInput label="Features" items={features} setItems={setFeatures} />
+              <ListInput
+                label="Features"
+                items={features}
+                setItems={setFeatures}
+              />
 
               {/* Requirements */}
               <ListInput
@@ -213,7 +240,9 @@ export default function Resource_Create() {
                   <button
                     onClick={() => setDisplayType("grid")}
                     className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all cursor-pointer ${
-                      displayType === "grid" ? "ring-2 ring-primary scale-[1.02]" : ""
+                      displayType === "grid"
+                        ? "ring-2 ring-primary scale-[1.02]"
+                        : ""
                     }`}
                   >
                     <Grid2X2 className="h-8 w-8 text-primary" />
@@ -222,7 +251,9 @@ export default function Resource_Create() {
                   <button
                     onClick={() => setDisplayType("list")}
                     className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all cursor-pointer ${
-                      displayType === "list" ? "ring-2 ring-primary scale-[1.02]" : ""
+                      displayType === "list"
+                        ? "ring-2 ring-primary scale-[1.02]"
+                        : ""
                     }`}
                   >
                     <LayoutGrid className="h-8 w-8 text-primary" />
@@ -252,8 +283,12 @@ export default function Resource_Create() {
 
                 {/* Submit Button */}
                 <div className="pt-6">
-                  <Button className="w-full" onClick={handleCreateResource}>
-                    Create Resource
+                  <Button
+                    className="w-full"
+                    onClick={handleCreateResource}
+                    disabled={loading}
+                  >
+                    {loading ? "Creating..." : "Create Resource"}
                   </Button>
                 </div>
               </div>

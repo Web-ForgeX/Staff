@@ -142,7 +142,8 @@ function DiscordIntegrationConfig({
                             style={{
                               backgroundColor: discordServers
                                 .find((s) => s.id === selectedServer)
-                                ?.roles.find((r) => r.id === selectedRole)?.color,
+                                ?.roles.find((r) => r.id === selectedRole)
+                                ?.color,
                             }}
                           />
                           <span>

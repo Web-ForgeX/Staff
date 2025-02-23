@@ -31,7 +31,10 @@ const SupportOption: FC<SupportOptionProps> = ({
     }));
   };
 
-  const updateSupportValue = (option: keyof typeof supportOptions, value: string) => {
+  const updateSupportValue = (
+    option: keyof typeof supportOptions,
+    value: string,
+  ) => {
     setSupportOptions((prev: SupportOptionsType) => ({
       ...prev,
       [option]: {

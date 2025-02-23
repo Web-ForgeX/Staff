@@ -12,7 +12,7 @@ const handleListChange = (
   index: number,
   value: string,
   list: string[],
-  setList: React.Dispatch<React.SetStateAction<string[]>>
+  setList: React.Dispatch<React.SetStateAction<string[]>>,
 ) => {
   const newList = [...list];
   newList[index] = value;
@@ -21,7 +21,7 @@ const handleListChange = (
 
 const addListItem = (
   list: string[],
-  setList: React.Dispatch<React.SetStateAction<string[]>>
+  setList: React.Dispatch<React.SetStateAction<string[]>>,
 ) => {
   setList([...list, ""]);
 };
@@ -29,7 +29,7 @@ const addListItem = (
 const removeListItem = (
   index: number,
   list: string[],
-  setList: React.Dispatch<React.SetStateAction<string[]>>
+  setList: React.Dispatch<React.SetStateAction<string[]>>,
 ) => {
   if (list.length > 1) {
     const newList = list.filter((_, i) => i !== index);
@@ -46,7 +46,9 @@ const ListInput: React.FC<ListInputProps> = ({ label, items, setItems }) => {
           <div key={index} className="flex gap-2">
             <Input
               value={item}
-              onChange={(e) => handleListChange(index, e.target.value, items, setItems)}
+              onChange={(e) =>
+                handleListChange(index, e.target.value, items, setItems)
+              }
               placeholder={`Enter a ${label.toLowerCase().slice(0, label.length - 1)}...`}
             />
             <Button

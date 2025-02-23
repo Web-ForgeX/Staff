@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GripHorizontal, ImageIcon } from "lucide-react";
+import { GripHorizontal, ImageIcon, Trash2 } from "lucide-react";
 
 interface ImageSortingProps {
   images: File[];
@@ -12,7 +12,20 @@ const ImageSorting: React.FC<ImageSortingProps> = ({ images, setImages }) => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files);
+      const allowedTypes = [
+        "image/png",
+        "image/jpeg",
+        "image/webp",
+        "image/gif",
+      ];
+      const newImages = Array.from(files).filter((file) =>
+        allowedTypes.includes(file.type),
+      );
+
+      if (newImages.length !== Array.from(files).length) {
+        alert("Only PNG, JPG, WEBP, and GIF formats are allowed.");
+      }
+
       setImages([...images, ...newImages]);
     }
   };
@@ -36,10 +49,15 @@ const ImageSorting: React.FC<ImageSortingProps> = ({ images, setImages }) => {
     setDraggedIndex(null);
   };
 
+  const handleDelete = (index: number) => {
+    const updatedImages = images.filter((_, i) => i !== index);
+    setImages(updatedImages);
+  };
+
   return (
     <div className="space-y-4">
-      <label className="text-sm font-medium">Resource Images</label>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <label className="block text-lg font-medium">Resource Images</label>
+      <div className="grid grid-cols-4 gap-4">
         {images.map((image, index) => (
           <div
             key={index}
@@ -49,30 +67,33 @@ const ImageSorting: React.FC<ImageSortingProps> = ({ images, setImages }) => {
             onDrop={() => handleDrop(index)}
             className="relative aspect-square rounded-lg border bg-card overflow-hidden group cursor-move"
           >
+            <GripHorizontal className="absolute top-2 left-2 text-white opacity-75" />
             <img
               src={URL.createObjectURL(image)}
-              alt={`Resource ${index + 1}`}
-              className="w-full h-full object-cover"
+              alt="Uploaded"
+              className="object-cover w-full h-full"
             />
-            <div className="absolute inset-0 bg-foreground/80 text-background opacity-0 group-hover:opacity-100 flex items-center justify-center">
-              <GripHorizontal className="h-5 w-5" />
-              <p className="text-sm font-medium">Drag to reorder</p>
-            </div>
+            <button
+              onClick={() => handleDelete(index)}
+              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-75 hover:opacity-100"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
           </div>
         ))}
-        <label className="aspect-square rounded-lg border border-dashed bg-card hover:bg-accent/50 cursor-pointer flex flex-col items-center justify-center gap-2">
-          <ImageIcon className="h-8 w-8 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">Add Image</span>
+        <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer">
           <input
             type="file"
-            accept="image/*"
             multiple
-            className="hidden"
+            accept="image/png, image/jpeg, image/webp, image/gif"
             onChange={handleImageUpload}
+            className="hidden"
           />
+          <ImageIcon className="h-6 w-6" />
+          <span className="text-sm">Add Image</span>
         </label>
       </div>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-gray-500">
         Drag images to reorder. First image will be the main display image.
       </p>
     </div>

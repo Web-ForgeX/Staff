@@ -24,7 +24,9 @@ function getFileIcon(fileName: string) {
     case "pptx":
     case "odt":
     case "pages":
-      return <FileText className="h-10 w-10 p-2 rounded text-red-500 bg-red-500/30" />;
+      return (
+        <FileText className="h-10 w-10 p-2 rounded text-red-500 bg-red-500/30" />
+      );
 
     case "py":
     case "js":
@@ -46,7 +48,9 @@ function getFileIcon(fileName: string) {
     case "pyw":
     case "json":
     case "csv":
-      return <Code2 className="h-10 w-10 p-2 rounded text-red-500 bg-red-500/30" />;
+      return (
+        <Code2 className="h-10 w-10 p-2 rounded text-red-500 bg-red-500/30" />
+      );
 
     case "zip":
     case "rar":
@@ -64,7 +68,9 @@ function getFileIcon(fileName: string) {
     case "dmg":
     case "deb":
     case "rpm":
-      return <AppWindow className="h-10 w-10 p-2 rounded text-blue-500 bg-blue-500/30" />;
+      return (
+        <AppWindow className="h-10 w-10 p-2 rounded text-blue-500 bg-blue-500/30" />
+      );
 
     case "jpg":
     case "jpeg":
@@ -85,7 +91,9 @@ function getFileIcon(fileName: string) {
     case "wmv":
     case "flv":
     case "webm":
-      return <Video className="h-10 w-10 p-2 rounded text-purple-500 bg-purple-500/30" />;
+      return (
+        <Video className="h-10 w-10 p-2 rounded text-purple-500 bg-purple-500/30" />
+      );
 
     case "mp3":
     case "wav":
@@ -93,10 +101,14 @@ function getFileIcon(fileName: string) {
     case "m4a":
     case "flac":
     case "aac":
-      return <Music className="h-10 w-10 p-2 rounded text-pink-500 bg-pink-500/30" />;
+      return (
+        <Music className="h-10 w-10 p-2 rounded text-pink-500 bg-pink-500/30" />
+      );
 
     default:
-      return <File className="h-10 w-10 p-2 rounded text-primary bg-primary/30" />;
+      return (
+        <File className="h-10 w-10 p-2 rounded text-primary bg-primary/30" />
+      );
   }
 }
 

@@ -1,4 +1,5 @@
-const BUCKETS = "https://nijvzcdijjnlnkjbulkf.supabase.co/storage/v1/object/public";
+const BUCKETS =
+  "https://nijvzcdijjnlnkjbulkf.supabase.co/storage/v1/object/public";
 
 export default {
   API: "https://api.forgex.net",
