@@ -70,7 +70,6 @@ export default function Resource_Create() {
   const [selectedServer, setSelectedServer] = useState<string>("");
   const [selectedRole, setSelectedRole] = useState<string>("");
 
-
   const discordServers: DiscordServer[] = [
     {
       id: "1",
@@ -313,8 +312,6 @@ export default function Resource_Create() {
             </div>
 
             <div className="space-y-6">
-              
-
               {/* Basic Information */}
               <div className="space-y-4">
                 <div>

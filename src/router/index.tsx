@@ -24,7 +24,7 @@ import AuthProvider, { ProtectedRoute } from "@/hooks/user";
 interface RouteConfig {
   path: string;
   title: string;
-  element: React.ComponentType;
+  element: React.ComponentType | (() => React.ReactElement);
   protected?: boolean;
 }
 
@@ -45,6 +45,14 @@ const withPageTitle = (
     return <WrappedComponent />;
   };
   return <WithPageTitleComponent />;
+};
+
+// External redirect component
+const ExternalRedirect = ({ to }: { to: string }) => {
+  useEffect(() => {
+    window.location.href = to;
+  }, [to]);
+  return null;
 };
 
 // Route configurations
@@ -92,6 +100,13 @@ const ROUTES: RouteConfig[] = [
   { path: "/auth/signup", title: "Sign Up", element: Signup },
   { path: "/auth/signin", title: "Sign In", element: Signin },
 
+  // Discord Redirect
+  {
+    path: "/discord",
+    title: "Discord",
+    element: () => <ExternalRedirect to="https://discord.gg/forgex" />,
+  },
+
   // 404 Route - Keep last
   { path: "*", title: "Page Not Found", element: Not_Found },
 ];
@@ -117,8 +132,14 @@ const Router: React.FC = () => {
                       element={
                         isProtected ? (
                           <ProtectedRoute>
-                            {withPageTitle(Component, title)}
+                            {typeof Component === "function" ? (
+                              <Component />
+                            ) : (
+                              withPageTitle(Component, title)
+                            )}
                           </ProtectedRoute>
+                        ) : typeof Component === "function" ? (
+                          <Component />
                         ) : (
                           withPageTitle(Component, title)
                         )
