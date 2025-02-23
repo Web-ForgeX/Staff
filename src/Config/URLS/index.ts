@@ -1,7 +1,7 @@
 const BUCKETS = "https://nijvzcdijjnlnkjbulkf.supabase.co/storage/v1/object/public";
 
 export default {
-  API: "http://localhost:4005",
+  API: "https://api.forgex.net",
   BUCKETS,
   USER_AVATARS_BUCKET: `${BUCKETS}/profile-pictures`,
   USER_BANNER_BUCKET: `${BUCKETS}/banner`,
