@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FC } from "react";
@@ -37,6 +39,7 @@ const SupportOption: FC<SupportOptionProps> = ({
         value,
       },
     }));
+    console.log(supportOptions);
   };
 
   return (

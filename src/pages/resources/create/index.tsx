@@ -8,6 +8,7 @@ import SupportOption from "@/components/support-option";
 import DiscordIntegrationConfig from "@/components/discord-integration-config";
 import ListInput from "@/components/list-input";
 import FileUpload from "@/components/file-upload";
+import SendRequest, { buildAuthHeaders } from "@/API/request";
 
 interface UploadedFile {
   file: File;
@@ -16,7 +17,7 @@ interface UploadedFile {
 
 export default function Resource_Create() {
   const [displayType, setDisplayType] = useState<"grid" | "list">("grid");
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
   const [features, setFeatures] = useState<string[]>([""]);
   const [requirements, setRequirements] = useState<string[]>([""]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -31,6 +32,74 @@ export default function Resource_Create() {
   const [selectedServer, setSelectedServer] = useState<string>("");
   const [selectedRole, setSelectedRole] = useState<string>("");
 
+  const [resourceName, setResourceName] = useState<string>("");
+  const [resourceDescription, setResourceDescription] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+
+  function buildFormData() {
+    const formData = new FormData();
+    formData.set("name", resourceName);
+    formData.set("description", resourceDescription);
+    formData.set("layout", displayType);
+    formData.set("price", String(price));
+    formData.set(
+      "discord_integration",
+      JSON.stringify(
+        discordEnabled
+          ? {
+              guild_id: selectedServer,
+              role_id: selectedRole,
+            }
+          : null
+      )
+    );
+    formData.set("features", JSON.stringify(features));
+    formData.set("requirements", JSON.stringify(requirements));
+    formData.set(
+      "support_docs",
+      supportOptions.documentation.enabled ? supportOptions.documentation.value : ""
+    );
+    formData.set(
+      "support_discord_server",
+      supportOptions.discord.enabled ? supportOptions.discord.value : ""
+    );
+    formData.set(
+      "support_website",
+      supportOptions.website.enabled ? supportOptions.website.value : ""
+    );
+    formData.set(
+      "support_changelog",
+      supportOptions.updates.enabled ? supportOptions.updates.value : ""
+    );
+    for (let i = 0; i < images.length; i++) {
+      formData.set("image" + i + 1, images[i]);
+    }
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      formData.set("file" + i + 1, uploadedFiles[i].file);
+    }
+
+    return formData;
+  }
+
+  async function handleCreateResource() {
+    const formData = buildFormData();
+    try {
+      const d = await SendRequest({
+        route: "resource/create",
+        method: "POST",
+        body: formData,
+        headers: await buildAuthHeaders(),
+      });
+      if (d.error) {
+        throw new Error(d.error);
+      } else {
+        console.log(d);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">
@@ -38,9 +107,7 @@ export default function Resource_Create() {
           <div className="space-y-8">
             <div>
               <h1 className="text-3xl font-bold">Create New Resource</h1>
-              <p className="text-muted-foreground mt-2">
-                Add a new resource to your store
-              </p>
+              <p className="text-muted-foreground mt-2">Create a new resource</p>
             </div>
 
             <div className="space-y-6">
@@ -54,6 +121,8 @@ export default function Resource_Create() {
                     id="name"
                     placeholder="Enter resource name..."
                     className="mt-1.5"
+                    value={resourceName}
+                    onChange={(e) => setResourceName(e.target.value)}
                   />
                 </div>
 
@@ -65,6 +134,8 @@ export default function Resource_Create() {
                     id="description"
                     rows={4}
                     placeholder="Describe your resource..."
+                    value={resourceDescription}
+                    onChange={(e) => setResourceDescription(e.target.value)}
                   />
                 </div>
 
@@ -83,6 +154,8 @@ export default function Resource_Create() {
                       step="0.01"
                       placeholder="0.00"
                       className="pl-7"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
                     />
                   </div>
                 </div>
@@ -179,7 +252,9 @@ export default function Resource_Create() {
 
                 {/* Submit Button */}
                 <div className="pt-6">
-                  <Button className="w-full">Create Resource</Button>
+                  <Button className="w-full" onClick={handleCreateResource}>
+                    Create Resource
+                  </Button>
                 </div>
               </div>
             </div>

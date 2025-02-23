@@ -2,8 +2,8 @@ import { useState } from "react";
 import { GripHorizontal, ImageIcon } from "lucide-react";
 
 interface ImageSortingProps {
-  images: string[];
-  setImages: (images: string[]) => void;
+  images: File[];
+  setImages: (images: File[]) => void;
 }
 
 const ImageSorting: React.FC<ImageSortingProps> = ({ images, setImages }) => {
@@ -12,7 +12,7 @@ const ImageSorting: React.FC<ImageSortingProps> = ({ images, setImages }) => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
+      const newImages = Array.from(files);
       setImages([...images, ...newImages]);
     }
   };
@@ -50,7 +50,7 @@ const ImageSorting: React.FC<ImageSortingProps> = ({ images, setImages }) => {
             className="relative aspect-square rounded-lg border bg-card overflow-hidden group cursor-move"
           >
             <img
-              src={image}
+              src={URL.createObjectURL(image)}
               alt={`Resource ${index + 1}`}
               className="w-full h-full object-cover"
             />
