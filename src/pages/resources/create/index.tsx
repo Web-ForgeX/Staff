@@ -105,7 +105,7 @@ export default function Resource_Create() {
       });
       if (d.error) {
         setLoading(false);
-        setError(d.error)
+        setError(d.error);
       } else {
         setLoading(false);
       }
@@ -128,7 +128,7 @@ export default function Resource_Create() {
             </div>
 
             <div className="space-y-6">
-            {error && (
+              {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>

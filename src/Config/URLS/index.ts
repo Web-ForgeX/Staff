@@ -7,5 +7,6 @@ export default {
   USER_AVATARS_BUCKET: `${BUCKETS}/profile-pictures`,
   USER_BANNER_BUCKET: `${BUCKETS}/banner`,
   RESOURCES_BUCKET: `${BUCKETS}/sign/resources`,
+  RESOURCES_IMGS_BUCKET: `${BUCKETS}/resource-images`,
   CDN: "https://assets.forgex.net",
 };

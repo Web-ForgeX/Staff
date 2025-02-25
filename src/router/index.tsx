@@ -87,7 +87,7 @@ const ROUTES: RouteConfig[] = [
     protected: true,
   },
   {
-    path: "/resources/:store/:name",
+    path: "/resources/:id",
     title: "Resource Details",
     element: Resource_View,
   },
