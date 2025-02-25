@@ -56,7 +56,7 @@ export default function Resource_View(): React.ReactNode {
   useEffect(() => {
     const fetchResource = async (): Promise<void> => {
       if (!id) {
-        setError("No resource ID provided");
+        setError("No resource ID provided!");
         setLoading(false);
         return;
       }
