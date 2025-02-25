@@ -108,6 +108,7 @@ export default function Resource_Create() {
         setError(d.error);
       } else {
         setLoading(false);
+        window.location.href = `/resources/${d.data.id}`;
       }
     } catch (error) {
       setLoading(false);
