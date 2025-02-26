@@ -177,7 +177,7 @@ export default function Resource_View(): React.ReactNode {
                 className={`p-2 rounded-md ${
                   viewLayout === 0
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent"
+                    : "text-muted-foreground hover:bg-accent cursor-pointer"
                 }`}
                 title="Grid Layout"
               >
