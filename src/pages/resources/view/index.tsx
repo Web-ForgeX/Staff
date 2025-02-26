@@ -16,6 +16,7 @@ import {
 import SendRequest from "@/API/request";
 import URLS from "@/Config/URLS";
 import VerifiedBadge from "@/components/ui/verified";
+import Not_Found from "@/pages/404";
 
 // Define TypeScript interfaces for our data structures
 interface ResourceData {
@@ -131,19 +132,20 @@ export default function Resource_View(): React.ReactNode {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading resource...</div>
+        <div className="space-y-4 w-full max-w-3xl">
+          <div className="h-6 w-3/4 bg-gray-200 animate-pulse rounded" />
+          <div className="h-4 w-1/2 bg-gray-200 animate-pulse rounded" />
+          <div className="h-60 bg-gray-300 animate-pulse rounded" />
+          <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
+          <div className="h-4 w-3/4 bg-gray-200 animate-pulse rounded" />
+          <div className="h-4 w-1/2 bg-gray-200 animate-pulse rounded" />
+        </div>
       </div>
     );
   }
 
   if (error || !resource) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-red-500">
-          {error || "Resource not found"}
-        </div>
-      </div>
-    );
+    return <Not_Found />;
   }
 
   // Handle case where there are no images
@@ -212,13 +214,13 @@ export default function Resource_View(): React.ReactNode {
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full backdrop-blur-sm transition-colors"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full backdrop-blur-sm transition-colors cursor-pointer"
                       >
                         <ChevronLeft className="h-6 w-6" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full backdrop-blur-sm transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full backdrop-blur-sm transition-colors cursor-pointer"
                       >
                         <ChevronRight className="h-6 w-6" />
                       </button>
