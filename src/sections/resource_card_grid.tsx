@@ -10,13 +10,10 @@ import {
 interface Resource {
   title: string;
   description?: string;
+  id: string;
   author?: string;
   version?: string;
-  link?: string;
-  image: {
-    src: string;
-    alt: string;
-  };
+  image: string;
 }
 
 interface ResourceCardGridProps {
@@ -101,12 +98,15 @@ export default function SECTION_Resource_Card_Grid({
           {resources.map((resource, index) => (
             <Card
               key={index}
-              className="flex flex-col overflow-hidden group hover:shadow-lg transition-shadow duration-200"
+              className="flex flex-col overflow-hidden group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+              onClick={() =>
+                (window.location.href = `/resources/${resource.id}`)
+              }
             >
               <div className="relative w-full aspect-[3/1] overflow-hidden">
                 <img
-                  src={resource.image.src}
-                  alt={resource.image.alt}
+                  src={resource.image}
+                  alt={resource.title}
                   className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                 />
               </div>

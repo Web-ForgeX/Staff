@@ -7,6 +7,7 @@ import HomePage from "@/pages/home";
 import User_Settings from "@/pages/user/settings";
 import User_Content from "@/pages/user/content";
 import User_View from "@/pages/user/view";
+import User_Resources from "@/pages/user/resources";
 import Resource_Create from "@/pages/resources/create";
 import Resource_View from "@/pages/resources/view";
 import Not_Found from "@/pages/404";
@@ -63,7 +64,7 @@ const ROUTES: RouteConfig[] = [
   // User Routes
   {
     path: "/user/settings",
-    title: "User Settings",
+    title: "My Settings",
     element: User_Settings,
     protected: true,
   },
@@ -71,6 +72,12 @@ const ROUTES: RouteConfig[] = [
     path: "/user/content",
     title: "My Content",
     element: User_Content,
+    protected: true,
+  },
+  {
+    path: "/user/resources",
+    title: "My Resources",
+    element: User_Resources,
     protected: true,
   },
   {
