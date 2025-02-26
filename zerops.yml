@@ -1,5 +1,5 @@
 zerops:
-  - setup: forgexweb
+  - setup: web
     build:
       base: bun@1.2
       buildCommands:
