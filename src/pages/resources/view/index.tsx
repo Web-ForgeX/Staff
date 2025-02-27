@@ -9,8 +9,6 @@ import {
   ChevronRight,
   Info,
   FileText,
-  LayoutGrid,
-  LayoutList,
   ExternalLink,
   MessageCircle,
   AlertTriangle,
@@ -123,6 +121,7 @@ export default function Resource_View(): React.ReactNode {
           setResource(result.data);
           // Set view layout based on resource's preferred layout if available
           if (result.data.layout !== undefined) {
+            console.log(result.data.layout);
             setViewLayout(result.data.layout);
           }
 
@@ -749,36 +748,6 @@ export default function Resource_View(): React.ReactNode {
             </div>
           </div>
         </div>
-
-        {/* Layout Toggle - Only show if there are images */}
-        {hasImages && (
-          <div className="mb-4 flex justify-end">
-            <div className="flex items-center space-x-2 bg-card rounded-lg p-1">
-              <button
-                onClick={() => setViewLayout(0)}
-                className={`p-2 rounded-md ${
-                  viewLayout === 0
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent cursor-pointer"
-                }`}
-                title="Grid Layout"
-              >
-                <LayoutGrid className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => setViewLayout(1)}
-                className={`p-2 rounded-md ${
-                  viewLayout === 1
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent"
-                }`}
-                title="Column Layout"
-              >
-                <LayoutList className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        )}
 
         {isOwner ? (
           <Tabs
