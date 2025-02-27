@@ -197,7 +197,7 @@ export default function Resource_View(): React.ReactNode {
       const result = await SendRequest({
         route: `/resource/id/${id}/members`,
         method: "POST",
-        data: {
+        body: {
           username: newMemberUsername.trim(),
         },
       });
@@ -376,7 +376,7 @@ export default function Resource_View(): React.ReactNode {
                 <img
                   src={getImageUrl(image)}
                   alt={`${resource.name} preview ${index + 1}`}
-                  className="w-full aspect-video object-cover"
+                  className="w-full h-auto" // Changed from "w-full h-full aspect-video object-cover"
                 />
               </div>
             ))}
