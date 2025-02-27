@@ -265,7 +265,7 @@ export default function Resource_Create() {
 
               <ImageSorting images={images} setImages={setImages} />
 
-              {/* Resource Content Upload */}
+              {/* Resource Content Upload - Modified to support folders and remove Add More button */}
               <FileUpload
                 uploadedFiles={uploadedFiles}
                 setUploadedFiles={setUploadedFiles}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import {
   Search,
   UserPlus,
   X,
+  Loader2,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -31,6 +32,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import SendRequest from "@/API/request";
 import URLS from "@/Config/URLS";
 import VerifiedBadge from "@/components/ui/verified";
@@ -82,6 +92,14 @@ export default function Resource_View(): React.ReactNode {
   const [members, setMembers] = useState<MemberData[]>([]);
   const [membersLoading, setMembersLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // New states for add member dialog
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState<boolean>(false);
+  const [newMemberUsername, setNewMemberUsername] = useState<string>("");
+  const [addMemberLoading, setAddMemberLoading] = useState<boolean>(false);
+  const [addMemberError, setAddMemberError] = useState<string | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const deleteConfirmationRef = useRef<HTMLInputElement>(null);
+  const newMemberUsernameRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
 
@@ -165,6 +183,40 @@ export default function Resource_View(): React.ReactNode {
       console.error("Error fetching members:", err);
     } finally {
       setMembersLoading(false);
+    }
+  };
+
+  // Function to handle adding a new member
+  const handleAddMember = async (): Promise<void> => {
+    if (!id || !newMemberUsername.trim()) return;
+
+    setAddMemberLoading(true);
+    setAddMemberError(null);
+
+    try {
+      const result = await SendRequest({
+        route: `/resource/id/${id}/members`,
+        method: "POST",
+        data: {
+          username: newMemberUsername.trim(),
+        },
+      });
+
+      if (result.success && result.data) {
+        // Add the new member to the members list
+        setMembers([...members, result.data]);
+        // Reset the form
+        setNewMemberUsername("");
+        // Close the dialog
+        setIsAddMemberOpen(false);
+      } else {
+        setAddMemberError(result.error || "Failed to add member");
+      }
+    } catch (err) {
+      console.error("Error adding member:", err);
+      setAddMemberError("An error occurred while trying to add the member");
+    } finally {
+      setAddMemberLoading(false);
     }
   };
 
@@ -502,10 +554,58 @@ export default function Resource_View(): React.ReactNode {
       <div className="bg-card rounded-lg border p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Members</h2>
-          <Button size="sm" className="flex items-center gap-2">
-            <UserPlus className="h-4 w-4" />
-            Add Member
-          </Button>
+          <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="flex items-center gap-2">
+                <UserPlus className="h-4 w-4" />
+                Add Member
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Member</DialogTitle>
+                <DialogDescription>
+                  Enter the username of the member you want to add to this
+                  resource.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <Input
+                  placeholder="Username"
+                  value={newMemberUsername}
+                  onChange={(e) => setNewMemberUsername(e.target.value)}
+                  className="mb-2"
+                  ref={newMemberUsernameRef}
+                />
+                {addMemberError && (
+                  <p className="text-destructive text-sm mt-2">
+                    {addMemberError}
+                  </p>
+                )}
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddMemberOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAddMember}
+                  disabled={addMemberLoading || !newMemberUsername.trim()}
+                >
+                  {addMemberLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    "Add Member"
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Search Bar */}
@@ -517,6 +617,7 @@ export default function Resource_View(): React.ReactNode {
             className="pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            ref={searchInputRef}
           />
         </div>
 
@@ -611,6 +712,7 @@ export default function Resource_View(): React.ReactNode {
                     value={deleteConfirmation}
                     onChange={(e) => setDeleteConfirmation(e.target.value)}
                     className="w-full p-2 border rounded-md bg-background"
+                    ref={deleteConfirmationRef}
                   />
                 </div>
               </AlertDialogDescription>

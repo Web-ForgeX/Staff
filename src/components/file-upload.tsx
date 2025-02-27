@@ -14,6 +14,7 @@ const formatFileSize = (bytes: number) => {
 interface UploadedFile {
   id: string;
   file: File;
+  path?: string; // Store relative path of file in folder uploads
 }
 
 interface FileUploadProps {
@@ -28,19 +29,20 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // File selection handler
+  // Handle file selection
   const handleFileSelect: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files).map((file) => ({
         file,
         id: crypto.randomUUID(),
+        path: file.webkitRelativePath || file.name, // Store relative path if available
       }));
       setUploadedFiles((prev) => [...prev, ...newFiles]);
     }
   };
 
-  // File drop handler
+  // Handle file drop
   const handleFileDrop: React.DragEventHandler = (e) => {
     e.preventDefault();
     setIsDraggingFiles(false);
@@ -50,6 +52,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       const newFiles = Array.from(files).map((file) => ({
         file,
         id: crypto.randomUUID(),
+        path: file.webkitRelativePath || file.name,
       }));
       setUploadedFiles((prev) => [...prev, ...newFiles]);
     }
@@ -101,12 +104,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
               >
-                Select Files
+                Select Files or Folders
               </Button>
               <input
                 ref={fileInputRef}
                 type="file"
                 multiple
+                webkitdirectory="true" // Enables folder selection
                 className="hidden"
                 onChange={handleFileSelect}
               />
@@ -121,7 +125,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
               >
                 {getFileIcon(file.file.name)}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{file.file.name}</p>
+                  <p className="font-medium truncate">{file.path}</p>
                   <p className="text-sm text-muted-foreground">
                     {formatFileSize(file.file.size)}
                   </p>
@@ -142,7 +146,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
               onClick={() => fileInputRef.current?.click()}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add More Files
+              Add More Files or Folders
             </Button>
           </div>
         )}
