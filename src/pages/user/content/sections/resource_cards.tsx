@@ -1,15 +1,26 @@
 import { Button } from "@/components/ui/button";
+import URLS from "@/Config/URLS";
 
 export default function USER_CONTENT_Resource_Cards({
   purchasedContent,
 }: {
   purchasedContent: {
-    id: number;
-    image: string;
+    id: string;
     name: string;
-    version: string;
+    image_urls?: string[];
+    description?: string;
+    price?: number;
+    owner?: string;
+    downloads?: number;
+    features?: string[];
+    requirements?: string[];
+    support_docs?: string;
+    support_discord_server?: string;
+    support_changelog?: string;
+    support_website?: string;
+    version?: string;
     lastUpdated?: string;
-    store: { name: string };
+    store?: { name: string };
   }[];
 }) {
   return (
@@ -24,7 +35,11 @@ export default function USER_CONTENT_Resource_Cards({
             {/* Item Image */}
             <div className="w-full md:w-44 h-32 md:h-24 rounded-lg overflow-hidden">
               <img
-                src={item.image}
+                src={
+                  item.image_urls?.[0]
+                    ? `${URLS.RESOURCES_IMGS_BUCKET}/${item.image_urls[0]}`
+                    : `${URLS.USER_AVATARS_BUCKET}/default.jpg`
+                }
                 alt={item.name}
                 className="w-full h-full object-cover"
               />
@@ -33,28 +48,39 @@ export default function USER_CONTENT_Resource_Cards({
             {/* Item Details */}
             <div className="flex-1 px-4 text-sm text-center md:text-left">
               <h3 className="text-base font-semibold">{item.name}</h3>
-              <p className="text-xs text-muted-foreground mt-2">
-                Version {item.version}
-              </p>
               <p className="text-xs text-muted-foreground">
-                Last Update: {item.lastUpdated || "N/A"}
+                {item.description
+                  ? item.description.substring(0, 50) +
+                    (item.description.length > 50 ? "..." : "")
+                  : ""}
               </p>
               <p className="text-sm text-green-500 font-medium mt-1">
-                {item.store.name}
+                {item.store?.name ||
+                  (item.price !== undefined ? `$${item.price.toFixed(2)}` : "")}
               </p>
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-row md:flex-col gap-2 mt-2 md:mt-0 w-full md:w-auto justify-center md:justify-start">
-              <Button className="px-3 py-1 text-xs  w-full md:w-auto">
+              <Button className="px-3 py-1 text-xs w-full md:w-auto">
                 Download
               </Button>
               <Button
-                variant="outline"
+                onClick={() => window.open(`/resources/${item.id}`, "_blank")}
+                variant="secondary"
                 className="px-3 py-1 text-xs w-full md:w-auto"
               >
                 View Details
               </Button>
+              {item.support_docs && (
+                <Button
+                  variant="secondary"
+                  className="px-3 py-1 text-xs w-full md:w-auto"
+                  onClick={() => window.open(item.support_docs, "_blank")}
+                >
+                  Docs
+                </Button>
+              )}
             </div>
           </div>
         ))}

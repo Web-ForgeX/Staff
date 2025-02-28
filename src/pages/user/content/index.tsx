@@ -1,57 +1,68 @@
+import { useEffect, useState } from "react";
 import USER_CONTENT_Stats_Cards from "./sections/stats_card";
 import USER_CONTENT_Resource_Cards from "./sections/resource_cards";
+import SendRequest from "@/API/request";
 
-const purchasedContent = [
-  {
-    id: 1,
-    name: "Advanced Economy Plugin",
-    description: "A comprehensive economy system for Minecraft servers",
-    price: "$19.99",
-    category: "Plugins",
-    image:
-      "https://cdn.builtbybit.com/carousel_images/1687/1687434-76515bbe9c89a73f8aef52db5feff0c6.jpg",
-    store: {
-      name: "PixelCraft Studios",
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=50&h=50",
-    },
-    version: "2.1.0",
-    lastUpdated: "2024/3/10",
-  },
-  {
-    id: 2,
-    name: "Medieval Asset Pack",
-    description: "High-quality medieval themed assets and textures",
-    price: "$24.99",
-    category: "Assets",
-    image:
-      "https://cdn.builtbybit.com/carousel_images/1687/1687434-76515bbe9c89a73f8aef52db5feff0c6.jpg",
-    store: {
-      name: "Asset Kings",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=50&h=50",
-    },
-    version: "1.5.2",
-    lastUpdated: "2024/3/13",
-  },
-  {
-    id: 3,
-    name: "RPG Quest System",
-    description: "Complete quest management system with dialogue trees",
-    price: "$34.99",
-    category: "Scripts",
-    image:
-      "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&q=80&w=400&h=300",
-    store: {
-      name: "RPG Masters",
-      avatar:
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=50&h=50",
-    },
-    version: "3.0.1",
-    lastUpdated: "2024/3/14",
-  },
-];
+// Define the structure of purchased content
+interface PurchasedContent {
+  id: string;
+  name: string;
+  image_urls: string[];
+  description: string;
+  owner: string;
+  price: number;
+  downloads: number;
+  layout: number;
+  approved: boolean;
+  features: string[];
+  requirements: string[];
+  support_docs: string;
+  support_discord_server: string;
+  support_changelog: string;
+  support_website: string;
+  discord_integration: string | null;
+}
+
 export default function User_Content() {
+  const [purchasedContent, setPurchasedContent] = useState<PurchasedContent[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUserContent() {
+      try {
+        setIsLoading(true);
+        const response = await SendRequest({
+          method: "GET",
+          route: "/user/content",
+        });
+
+        if (response.error) {
+          setError(response.error);
+        } else {
+          console.log(response.data);
+          setPurchasedContent(response.data || []);
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch user content",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchUserContent();
+  }, []);
+
+  // Calculate total price (ensure every item has a valid price)
+  const totalPrice: number = purchasedContent.reduce(
+    (sum, item) => sum + (item.price || 0),
+    0,
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col gap-8">
@@ -62,8 +73,31 @@ export default function User_Content() {
             Access and download your purchased items
           </p>
         </div>
-        <USER_CONTENT_Stats_Cards />
-        <USER_CONTENT_Resource_Cards purchasedContent={purchasedContent} />
+
+        {/* Pass amount and totalSpent to stats */}
+        <USER_CONTENT_Stats_Cards
+          amount={purchasedContent.length}
+          price={totalPrice}
+        />
+
+        {/* Content Display */}
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <p>Error loading content</p>
+          </div>
+        ) : purchasedContent.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              You haven't purchased any content yet.
+            </p>
+          </div>
+        ) : (
+          <USER_CONTENT_Resource_Cards purchasedContent={purchasedContent} />
+        )}
       </div>
     </div>
   );

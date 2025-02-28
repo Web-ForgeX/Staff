@@ -5,7 +5,7 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
-@theme inline {
+@theme {
   --color-background: oklch(98.51% 0 0);
   --color-foreground: oklch(23.93% 0 0);
   --color-card: oklch(92.8% 0 0);
