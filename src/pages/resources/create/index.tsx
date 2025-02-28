@@ -26,7 +26,7 @@ interface UploadedFile {
 export default function Resource_Create() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | boolean>(false);
-  const [displayType, setDisplayType] = useState<"grid" | "list">("grid");
+  const [displayType, setDisplayType] = useState<0 | 1>(0);
   const [images, setImages] = useState<File[]>([]);
   const [features, setFeatures] = useState<string[]>([""]);
   const [requirements, setRequirements] = useState<string[]>([""]);
@@ -50,7 +50,7 @@ export default function Resource_Create() {
     const formData = new FormData();
     formData.set("name", resourceName);
     formData.set("description", resourceDescription);
-    formData.set("layout", displayType);
+    formData.set("layout", String(displayType));
     formData.set("price", String(price));
     formData.set(
       "discord_integration",
@@ -63,14 +63,8 @@ export default function Resource_Create() {
           : null,
       ),
     );
-
-    // Add features and requirements as JSON strings (this is what the backend expects)
-    formData.set("features", JSON.stringify(features.filter((f) => f.trim())));
-    formData.set(
-      "requirements",
-      JSON.stringify(requirements.filter((r) => r.trim())),
-    );
-
+    formData.set("features", JSON.stringify(features));
+    formData.set("requirements", JSON.stringify(requirements));
     formData.set(
       "support_docs",
       supportOptions.documentation.enabled
@@ -89,15 +83,11 @@ export default function Resource_Create() {
       "support_changelog",
       supportOptions.updates.enabled ? supportOptions.updates.value : "",
     );
-
-    // Add images - the backend is looking for keys that start with "image"
     for (let i = 0; i < images.length; i++) {
-      formData.append(`image${i}`, images[i]);
+      formData.set("image" + i + 1, images[i]);
     }
-
-    // Add files - the backend is looking for keys that start with "files"
     for (let i = 0; i < uploadedFiles.length; i++) {
-      formData.set(`files${i}`, uploadedFiles[i].file);
+      formData.set("file" + i + 1, uploadedFiles[i].file);
     }
 
     return formData;
@@ -249,9 +239,9 @@ export default function Resource_Create() {
                 <label className="text-sm font-medium">Display Type</label>
                 <div className="flex gap-4 mt-2">
                   <button
-                    onClick={() => setDisplayType("grid")}
+                    onClick={() => setDisplayType(0)}
                     className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all cursor-pointer ${
-                      displayType === "grid"
+                      displayType === 0
                         ? "ring-2 ring-primary scale-[1.02]"
                         : ""
                     }`}
@@ -260,9 +250,9 @@ export default function Resource_Create() {
                     <span className="text-sm font-medium">Grid Layout</span>
                   </button>
                   <button
-                    onClick={() => setDisplayType("list")}
+                    onClick={() => setDisplayType(1)}
                     className={`flex-1 aspect-video flex flex-col items-center justify-center gap-2 rounded-lg border bg-card hover:bg-accent/50 transition-all cursor-pointer ${
-                      displayType === "list"
+                      displayType === 1
                         ? "ring-2 ring-primary scale-[1.02]"
                         : ""
                     }`}
