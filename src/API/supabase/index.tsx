@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-  "https://nijvzcdijjnlnkjbulkf.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5panZ6Y2RpampubG5ramJ1bGtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNzIzODUsImV4cCI6MjA1Mzg0ODM4NX0.YNPBw6S0gVCLmGH1qGqUO4iTWZwcvKHkEcTlZBgnIf4",
+  "https://supabase.forgex.net/",
+  "eyJ0eXAiOiAiSldUIiwiYWxnIjogIkhTMjU2In0.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzQwNzU0NTIwLAogICJleHAiOiAxODk4NDM0NTIwCn0.FkzIuWVh84XIGRkIH5UzXIqVV3J8kjQNZYcFnDiPYME",
 );
 
 export default supabase;

@@ -63,8 +63,14 @@ export default function Resource_Create() {
           : null,
       ),
     );
-    formData.set("features", JSON.stringify(features));
-    formData.set("requirements", JSON.stringify(requirements));
+
+    // Add features and requirements as JSON strings (this is what the backend expects)
+    formData.set("features", JSON.stringify(features.filter((f) => f.trim())));
+    formData.set(
+      "requirements",
+      JSON.stringify(requirements.filter((r) => r.trim())),
+    );
+
     formData.set(
       "support_docs",
       supportOptions.documentation.enabled
@@ -83,11 +89,15 @@ export default function Resource_Create() {
       "support_changelog",
       supportOptions.updates.enabled ? supportOptions.updates.value : "",
     );
+
+    // Add images - the backend is looking for keys that start with "image"
     for (let i = 0; i < images.length; i++) {
-      formData.set("image" + i + 1, images[i]);
+      formData.append(`image${i}`, images[i]);
     }
+
+    // Add files - the backend is looking for keys that start with "files"
     for (let i = 0; i < uploadedFiles.length; i++) {
-      formData.set("file" + i + 1, uploadedFiles[i].file);
+      formData.set(`files${i}`, uploadedFiles[i].file);
     }
 
     return formData;

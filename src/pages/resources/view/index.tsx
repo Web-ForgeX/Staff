@@ -15,7 +15,6 @@ import {
   Trash2,
   Search,
   UserPlus,
-  X,
   Loader2,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -158,8 +157,8 @@ export default function Resource_View(): React.ReactNode {
   }, [id]);
 
   useEffect(() => {
-    // Fetch members when the Settings tab is active
-    if (isOwner && activeTab === "settings" && id) {
+    // Fetch members when the Customers tab is active
+    if (activeTab === "customers" && id) {
       fetchMembers();
     }
   }, [activeTab, id]);
@@ -176,10 +175,10 @@ export default function Resource_View(): React.ReactNode {
       if (!result.error && result.data) {
         setMembers(result.data);
       } else {
-        console.error("Failed to fetch members:", result.error);
+        console.error("Failed to fetch customers:", result.error);
       }
     } catch (err) {
-      console.error("Error fetching members:", err);
+      console.error("Error fetching customers:", err);
     } finally {
       setMembersLoading(false);
     }
@@ -209,11 +208,11 @@ export default function Resource_View(): React.ReactNode {
         // Close the dialog
         setIsAddMemberOpen(false);
       } else {
-        setAddMemberError(result.error || "Failed to add member");
+        setAddMemberError(result.error || "Failed to add customer");
       }
     } catch (err) {
-      console.error("Error adding member:", err);
-      setAddMemberError("An error occurred while trying to add the member");
+      console.error("Error adding customer:", err);
+      setAddMemberError("An error occurred while trying to add the customer");
     } finally {
       setAddMemberLoading(false);
     }
@@ -260,28 +259,6 @@ export default function Resource_View(): React.ReactNode {
     } catch (err) {
       console.error("Error deleting resource:", err);
       alert("An error occurred while trying to delete the resource");
-    }
-  };
-
-  // Function to remove a member
-  const removeMember = async (memberId: string): Promise<void> => {
-    if (!id) return;
-
-    try {
-      const result = await SendRequest({
-        route: `/resource/id/${id}/members/${memberId}`,
-        method: "DELETE",
-      });
-
-      if (result.success) {
-        // Update the members list
-        setMembers(members.filter((member) => member.id !== memberId));
-      } else {
-        alert("Failed to remove member: " + (result.error || "Unknown error"));
-      }
-    } catch (err) {
-      console.error("Error removing member:", err);
-      alert("An error occurred while trying to remove the member");
     }
   };
 
@@ -546,65 +523,67 @@ export default function Resource_View(): React.ReactNode {
     </div>
   );
 
-  // Settings content for resource owner
-  const SettingsContent = () => (
+  // Customers content - visible to everyone
+  const CustomersContent = () => (
     <div className="space-y-8">
-      {/* Members Management */}
+      {/* Customers List */}
       <div className="bg-card rounded-lg border p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Members</h2>
-          <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="flex items-center gap-2">
-                <UserPlus className="h-4 w-4" />
-                Add Member
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add Member</DialogTitle>
-                <DialogDescription>
-                  Enter the username of the member you want to add to this
-                  resource.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="py-4">
-                <Input
-                  placeholder="Username"
-                  value={newMemberUsername}
-                  onChange={(e) => setNewMemberUsername(e.target.value)}
-                  className="mb-2"
-                  ref={newMemberUsernameRef}
-                />
-                {addMemberError && (
-                  <p className="text-destructive text-sm mt-2">
-                    {addMemberError}
-                  </p>
-                )}
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAddMemberOpen(false)}
-                >
-                  Cancel
+          <h2 className="text-2xl font-bold">Customers</h2>
+          {isOwner && (
+            <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="flex items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Add Customer
                 </Button>
-                <Button
-                  onClick={handleAddMember}
-                  disabled={addMemberLoading || !newMemberUsername.trim()}
-                >
-                  {addMemberLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Adding...
-                    </>
-                  ) : (
-                    "Add Member"
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Customer</DialogTitle>
+                  <DialogDescription>
+                    Enter the username of the customer you want to add to this
+                    resource.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                  <Input
+                    placeholder="Username"
+                    value={newMemberUsername}
+                    onChange={(e) => setNewMemberUsername(e.target.value)}
+                    className="mb-2"
+                    ref={newMemberUsernameRef}
+                  />
+                  {addMemberError && (
+                    <p className="text-destructive text-sm mt-2">
+                      {addMemberError}
+                    </p>
                   )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsAddMemberOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleAddMember}
+                    disabled={addMemberLoading || !newMemberUsername.trim()}
+                  >
+                    {addMemberLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Adding...
+                      </>
+                    ) : (
+                      "Add Customer"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
 
         {/* Search Bar */}
@@ -612,7 +591,7 @@ export default function Resource_View(): React.ReactNode {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search members..."
+            placeholder="Search customers..."
             className="pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -620,7 +599,7 @@ export default function Resource_View(): React.ReactNode {
           />
         </div>
 
-        {/* Members List */}
+        {/* Customers List */}
         <div className="space-y-4">
           {membersLoading ? (
             <div className="space-y-4">
@@ -638,7 +617,7 @@ export default function Resource_View(): React.ReactNode {
             filteredMembers.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-3 rounded-md hover:bg-accent/50 transition-colors"
+                className="flex items-center p-3 rounded-md hover:bg-accent/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   {member.picture ? (
@@ -658,77 +637,71 @@ export default function Resource_View(): React.ReactNode {
                     <p className="font-medium">{member.username}</p>
                   </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-destructive"
-                  onClick={() => removeMember(member.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
               </div>
             ))
           ) : (
             <div className="text-center py-8 text-muted-foreground">
               {searchQuery
-                ? "No members found matching your search."
-                : "No members added to this resource yet."}
+                ? "No customers found matching your search."
+                : "No customers have purchased this resource yet."}
             </div>
           )}
         </div>
       </div>
 
-      {/* Danger Zone */}
-      <div className="bg-destructive/10 rounded-lg border border-destructive p-6">
-        <div className="flex items-center mb-4">
-          <AlertTriangle className="h-6 w-6 text-destructive mr-2" />
-          <h2 className="text-xl font-bold text-destructive">Danger Zone</h2>
+      {/* Danger Zone - Only visible to resource owner */}
+      {isOwner && (
+        <div className="bg-destructive/10 rounded-lg border border-destructive p-6">
+          <div className="flex items-center mb-4">
+            <AlertTriangle className="h-6 w-6 text-destructive mr-2" />
+            <h2 className="text-xl font-bold text-destructive">Danger Zone</h2>
+          </div>
+
+          <p className="text-muted-foreground mb-6">
+            Actions performed here are permanent and cannot be undone.
+          </p>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="w-full md:w-auto">
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Resource
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your resource and remove it from our servers.
+                  <div className="mt-4">
+                    <p className="font-semibold mb-2">
+                      Type "{resource.name}" to confirm deletion:
+                    </p>
+                    <input
+                      type="text"
+                      value={deleteConfirmation}
+                      onChange={(e) => setDeleteConfirmation(e.target.value)}
+                      className="w-full p-2 border rounded-md bg-background"
+                      ref={deleteConfirmationRef}
+                    />
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteResource}
+                  disabled={deleteConfirmation !== resource.name}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
-
-        <p className="text-muted-foreground mb-6">
-          Actions performed here are permanent and cannot be undone.
-        </p>
-
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" className="w-full md:w-auto">
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete Resource
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                resource and remove it from our servers.
-                <div className="mt-4">
-                  <p className="font-semibold mb-2">
-                    Type "{resource.name}" to confirm deletion:
-                  </p>
-                  <input
-                    type="text"
-                    value={deleteConfirmation}
-                    onChange={(e) => setDeleteConfirmation(e.target.value)}
-                    className="w-full p-2 border rounded-md bg-background"
-                    ref={deleteConfirmationRef}
-                  />
-                </div>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDeleteResource}
-                disabled={deleteConfirmation !== resource.name}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+      )}
     </div>
   );
 
@@ -749,26 +722,18 @@ export default function Resource_View(): React.ReactNode {
           </div>
         </div>
 
-        {isOwner ? (
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="mb-6">
-              <TabsTrigger value="info">Information</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
-            </TabsList>
-            <TabsContent value="info">
-              <ResourceContent />
-            </TabsContent>
-            <TabsContent value="settings">
-              <SettingsContent />
-            </TabsContent>
-          </Tabs>
-        ) : (
-          <ResourceContent />
-        )}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="info">Information</TabsTrigger>
+            <TabsTrigger value="customers">Customers</TabsTrigger>
+          </TabsList>
+          <TabsContent value="info">
+            <ResourceContent />
+          </TabsContent>
+          <TabsContent value="customers">
+            <CustomersContent />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
