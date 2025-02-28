@@ -14,6 +14,15 @@ export default function Footer() {
                   About Us
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://assets.forgex.net/"
+                  target="_blank"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Branding
+                </a>
+              </li>
             </ul>
           </div>
           <div>

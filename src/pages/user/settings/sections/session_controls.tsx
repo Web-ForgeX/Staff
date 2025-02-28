@@ -16,8 +16,9 @@ export default function USER_SETTINGS_Session_Controls() {
           variant="secondary"
           className="w-full sm:w-auto"
           onClick={() => {
-            supabase.auth.signOut();
-            window.location.href = "/";
+            supabase.auth.signOut().then(() => {
+              window.location.href = "/";
+            });
           }}
         >
           <LogOut className="w-4 h-4 mr-2" />
