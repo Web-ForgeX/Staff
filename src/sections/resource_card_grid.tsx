@@ -39,7 +39,7 @@ const getGridCols = (per_row: number) => {
 
 const LoadingCard = () => (
   <Card className="flex flex-col overflow-hidden">
-    <div className="relative w-full aspect-[3/1] overflow-hidden">
+    <div className="relative w-full aspect-video overflow-hidden">
       <div className="w-full h-full bg-muted animate-pulse" />
     </div>
     <div className="flex flex-col flex-grow">
@@ -103,11 +103,11 @@ export default function SECTION_Resource_Card_Grid({
                 (window.location.href = `/resources/${resource.id}`)
               }
             >
-              <div className="relative w-full aspect-[3/1] overflow-hidden">
+              <div className="relative w-full aspect-video overflow-hidden">
                 <img
                   src={resource.image}
                   alt={resource.title}
-                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                  className="w-full h-full object-cover object-top transition-transform duration-200 group-hover:scale-105"
                 />
               </div>
               <div className="flex flex-col flex-grow">
