@@ -16,6 +16,8 @@ import {
   Search,
   UserPlus,
   Loader2,
+  PaintBucket,
+  Pencil,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -158,7 +160,7 @@ export default function Resource_View(): React.ReactNode {
 
   useEffect(() => {
     // Fetch members when the Customers tab is active
-    if (activeTab === "customers" && id) {
+    if (activeTab === "extra" && id) {
       fetchMembers();
     }
   }, [activeTab, id]);
@@ -546,187 +548,206 @@ export default function Resource_View(): React.ReactNode {
     </div>
   );
 
-  // Customers content - visible to everyone
-  const CustomersContent = () => (
-    <div className="space-y-8">
-      {/* Customers List */}
-      <div className="bg-card rounded-lg border p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Customers</h2>
-          {isOwner && (
-            <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="flex items-center gap-2">
-                  <UserPlus className="h-4 w-4" />
-                  Add Customer
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add Customer</DialogTitle>
-                  <DialogDescription>
-                    Enter the username of the customer you want to add to this
-                    resource.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                  <Input
-                    placeholder="Username"
-                    value={newMemberUsername}
-                    onChange={(e) => setNewMemberUsername(e.target.value)}
-                    className="mb-2"
-                    ref={newMemberUsernameRef}
-                  />
-                  {addMemberError && (
-                    <p className="text-destructive text-sm mt-2">
-                      {addMemberError}
-                    </p>
-                  )}
-                </div>
-                <DialogFooter>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsAddMemberOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleAddMember}
-                    disabled={addMemberLoading || !newMemberUsername.trim()}
-                  >
-                    {addMemberLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Adding...
-                      </>
-                    ) : (
-                      "Add Customer"
-                    )}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search customers..."
-            className="pl-10"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            ref={searchInputRef}
-          />
-        </div>
-
+  const CustomersContent = () => {
+    return (
+      <div className="space-y-8">
         {/* Customers List */}
-        <div className="space-y-4">
-          {membersLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 p-3 rounded-md bg-accent/50 animate-pulse"
-                >
-                  <div className="w-10 h-10 rounded-full bg-muted"></div>
-                  <div className="h-4 w-32 bg-muted rounded"></div>
-                </div>
-              ))}
-            </div>
-          ) : filteredMembers.length > 0 ? (
-            filteredMembers.map((member) => (
-              <div
-                key={member.id}
-                className="flex items-center p-3 rounded-md hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  {member.picture ? (
-                    <img
-                      src={`${URLS.USER_AVATARS_BUCKET}/${member.picture}`}
-                      alt={member.username}
-                      className="w-10 h-10 rounded-full object-cover"
+        <div className="bg-card rounded-lg border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold">Customers</h2>
+            {isOwner && (
+              <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="flex items-center gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Add Customer
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Customer</DialogTitle>
+                    <DialogDescription>
+                      Enter the username of the customer you want to add to this
+                      resource.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4">
+                    <Input
+                      placeholder="Username"
+                      value={newMemberUsername}
+                      onChange={(e) => setNewMemberUsername(e.target.value)}
+                      className="mb-2"
+                      ref={newMemberUsernameRef}
                     />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="text-primary font-bold">
-                        {member.username.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-medium">{member.username}</p>
+                    {addMemberError && (
+                      <p className="text-destructive text-sm mt-2">
+                        {addMemberError}
+                      </p>
+                    )}
                   </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              {searchQuery
-                ? "No customers found matching your search."
-                : "No customers have purchased this resource yet."}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Danger Zone - Only visible to resource owner */}
-      {isOwner && (
-        <div className="bg-destructive/10 rounded-lg border border-destructive p-6">
-          <div className="flex items-center mb-4">
-            <AlertTriangle className="h-6 w-6 text-destructive mr-2" />
-            <h2 className="text-xl font-bold text-destructive">Danger Zone</h2>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsAddMemberOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleAddMember}
+                      disabled={addMemberLoading || !newMemberUsername.trim()}
+                    >
+                      {addMemberLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Adding...
+                        </>
+                      ) : (
+                        "Add Customer"
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
 
-          <p className="text-muted-foreground mb-6">
-            Actions performed here are permanent and cannot be undone.
-          </p>
+          {/* Search Bar */}
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search customers..."
+              className="pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              ref={searchInputRef}
+            />
+          </div>
 
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="w-full md:w-auto">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Resource
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your resource and remove it from our servers.
-                  <div className="mt-4">
-                    <p className="font-semibold mb-2">
-                      Type "{resource.name}" to confirm deletion:
-                    </p>
-                    <input
-                      type="text"
-                      value={deleteConfirmation}
-                      onChange={(e) => setDeleteConfirmation(e.target.value)}
-                      className="w-full p-2 border rounded-md bg-background"
-                      ref={deleteConfirmationRef}
-                    />
+          {/* Customers List */}
+          <div className="space-y-4">
+            {membersLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-md bg-accent/50 animate-pulse"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-muted"></div>
+                    <div className="h-4 w-32 bg-muted rounded"></div>
                   </div>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteResource}
-                  disabled={deleteConfirmation !== resource.name}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                ))}
+              </div>
+            ) : filteredMembers.length > 0 ? (
+              filteredMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center p-3 rounded-md hover:bg-accent/50 transition-colors"
                 >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                  <div className="flex items-center gap-3">
+                    {member.picture ? (
+                      <img
+                        src={`${URLS.USER_AVATARS_BUCKET}/${member.picture}`}
+                        alt={member.username}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span className="text-primary font-bold">
+                          {member.username.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-medium">{member.username}</p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                {searchQuery
+                  ? "No customers found matching your search."
+                  : "No customers have purchased this resource yet."}
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </div>
-  );
+
+        <div className="bg-primary/10 rounded-lg border border-primary p-6">
+          <div className="flex items-center mb-4">
+            <PaintBucket className="h-6 w-6 text-primary mr-2" />
+            <h2 className="text-xl font-bold text-primary">Customisation</h2>
+          </div>
+
+          {isOwner && (
+            <Button
+              className="w-full md:w-auto"
+              onClick={() => (window.location.href = `/resources/edit/${id}`)}
+            >
+              <Pencil /> Edit Resource
+            </Button>
+          )}
+        </div>
+
+        {/* Danger Zone - Only visible to resource owner */}
+        {isOwner && (
+          <div className="bg-destructive/10 rounded-lg border border-destructive p-6">
+            <div className="flex items-center mb-4">
+              <AlertTriangle className="h-6 w-6 text-destructive mr-2" />
+              <h2 className="text-xl font-bold text-destructive">
+                Danger Zone
+              </h2>
+            </div>
+
+            <p className="text-muted-foreground mb-6">
+              Actions performed here are permanent and cannot be undone.
+            </p>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full md:w-auto">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Resource
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your resource and remove it from our servers.
+                    <div className="mt-4">
+                      <p className="font-semibold mb-2">
+                        Type "{resource.name}" to confirm deletion:
+                      </p>
+                      <input
+                        type="text"
+                        value={deleteConfirmation}
+                        onChange={(e) => setDeleteConfirmation(e.target.value)}
+                        className="w-full p-2 border rounded-md bg-background"
+                        ref={deleteConfirmationRef}
+                      />
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteResource}
+                    disabled={deleteConfirmation !== resource.name}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">
@@ -748,12 +769,12 @@ export default function Resource_View(): React.ReactNode {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="info">Information</TabsTrigger>
-            <TabsTrigger value="customers">Customers</TabsTrigger>
+            <TabsTrigger value="extra">Extra</TabsTrigger>
           </TabsList>
           <TabsContent value="info">
             <ResourceContent />
           </TabsContent>
-          <TabsContent value="customers">
+          <TabsContent value="extra">
             <CustomersContent />
           </TabsContent>
         </Tabs>
