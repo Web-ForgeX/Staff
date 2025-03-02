@@ -10,6 +10,7 @@ import User_Content from "@/pages/user/content";
 import User_View from "@/pages/user/view";
 import User_Resources from "@/pages/user/resources";
 import Resource_Create from "@/pages/resources/create";
+import Resource_Edit from "@/pages/resources/edit";
 import Resource_View from "@/pages/resources/view";
 import Not_Found from "@/pages/404";
 import TOS from "@/pages/tos";
@@ -93,6 +94,12 @@ const ROUTES: RouteConfig[] = [
     path: "/resources/create",
     title: "Create A Resource",
     element: Resource_Create,
+    protected: true,
+  },
+  {
+    path: "/resources/edit/:id",
+    title: "Edit Resource",
+    element: Resource_Edit,
     protected: true,
   },
   {
