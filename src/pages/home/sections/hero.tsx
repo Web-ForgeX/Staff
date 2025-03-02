@@ -1,6 +1,6 @@
 // Sections
 import SECTION_SearchBar from "@/sections/searchbar";
-import SECTION_Category_Chips from "@/sections/category_chips";
+// import SECTION_Category_Chips from "@/sections/category_chips";
 
 export default function HOME_Hero() {
   return (

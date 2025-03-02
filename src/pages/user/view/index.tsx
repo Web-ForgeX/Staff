@@ -82,7 +82,7 @@ export default function User_View() {
 
   return (
     <>
-      <USER_VIEW_User_Info user={user} />
+      <USER_VIEW_User_Info user={user} resource_count={resources.length} />
       <div className="pt-10 pb-30">
         <SECTION_Resource_Card_Grid
           resources={resources}

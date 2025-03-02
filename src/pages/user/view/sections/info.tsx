@@ -3,7 +3,13 @@ import URLS from "@/Config/URLS";
 import VerifiedBadge from "@/components/ui/verified";
 import { User } from "@/API/Types";
 
-export default function USER_VIEW_User_Info({ user }: { user: User | null }) {
+export default function USER_VIEW_User_Info({
+  user,
+  resource_count,
+}: {
+  user: User | null;
+  resource_count: number;
+}) {
   if (!user) {
     return (
       <>
@@ -80,7 +86,9 @@ export default function USER_VIEW_User_Info({ user }: { user: User | null }) {
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 pt-2">
               <div className="flex items-center gap-1.5 sm:gap-2 bg-background/95 backdrop-blur-sm rounded-full px-4 py-2">
                 <Package className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                <span className="font-semibold text-sm sm:text-base">0</span>
+                <span className="font-semibold text-sm sm:text-base">
+                  {resource_count}
+                </span>
                 <span className="text-sm sm:text-base text-muted-foreground">
                   Resources
                 </span>
