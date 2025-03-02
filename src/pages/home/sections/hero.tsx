@@ -20,7 +20,6 @@ export default function HOME_Hero() {
               </p>
               <div className="mt-4 max-w-xl mx-auto">
                 <SECTION_SearchBar />
-                <SECTION_Category_Chips />
               </div>
             </div>
           </div>
