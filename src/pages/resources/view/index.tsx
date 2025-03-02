@@ -262,6 +262,27 @@ export default function Resource_View(): React.ReactNode {
     }
   };
 
+  // Function to format text with escape sequences
+  const formatText = (text: string): React.ReactNode[] => {
+    if (!text) return [];
+
+    // Replace literal \n with actual line breaks
+    const lines = text.split("\\n");
+
+    return lines.map((line, index) => {
+      // Replace literal \t with actual tabs (using space equivalent)
+      const formattedLine = line.replace(/\\t/g, "\u00A0\u00A0\u00A0\u00A0");
+
+      // Return each line with proper breaks
+      return (
+        <React.Fragment key={index}>
+          {index > 0 && <br />}
+          {formattedLine}
+        </React.Fragment>
+      );
+    });
+  };
+
   const isOwner = user && resource && user.id === resource.owner;
 
   // Filter members based on search query
@@ -296,6 +317,14 @@ export default function Resource_View(): React.ReactNode {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Main Content */}
       <div className="lg:col-span-2">
+        {/* Description - Updated to use formatText function */}
+        <div className={`${hasImages ? "mt-8" : ""}`}>
+          <h2 className="text-2xl font-bold mb-4">Description</h2>
+          <p className="text-muted-foreground mb-10">
+            {formatText(resource.description)}
+          </p>
+        </div>
+
         {/* Image Gallery - Only show if there are images */}
         {hasImages && viewLayout === 0 && (
           <div className="space-y-4">
@@ -359,13 +388,7 @@ export default function Resource_View(): React.ReactNode {
           </div>
         )}
 
-        {/* Description */}
-        <div className={`${hasImages ? "mt-8" : ""}`}>
-          <h2 className="text-2xl font-bold mb-4">Description</h2>
-          <p className="text-muted-foreground">{resource.description}</p>
-        </div>
-
-        {/* Features */}
+        {/* Features - Updated to use formatText for each feature */}
         {resource.features && resource.features.length > 0 && (
           <div className="mt-8">
             <h2 className="text-2xl font-bold mb-4">Features</h2>
@@ -373,17 +396,17 @@ export default function Resource_View(): React.ReactNode {
               {resource.features.map((feature, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 text-muted-foreground"
+                  className="flex items-start gap-2 text-muted-foreground"
                 >
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
-                  {feature}
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
+                  <div>{formatText(feature)}</div>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Requirements */}
+        {/* Requirements - Updated to use formatText for each requirement */}
         {resource.requirements && resource.requirements.length > 0 && (
           <div className="mt-8">
             <h2 className="text-2xl font-bold mb-4">Requirements</h2>
@@ -391,10 +414,10 @@ export default function Resource_View(): React.ReactNode {
               {resource.requirements.map((req, index) => (
                 <li
                   key={index}
-                  className="flex items-center gap-2 text-muted-foreground"
+                  className="flex items-start gap-2 text-muted-foreground"
                 >
-                  <Info className="h-4 w-4 text-primary" />
-                  {req}
+                  <Info className="h-4 w-4 text-primary flex-shrink-0 mt-1" />
+                  <div>{formatText(req)}</div>
                 </li>
               ))}
             </ul>
@@ -438,7 +461,7 @@ export default function Resource_View(): React.ReactNode {
                 <MessageCircle className="h-6 w-6 text-primary mb-2" />
                 <p className="font-medium">Discord Support</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {resource.support_discord_server}
+                  {formatText(resource.support_discord_server)}
                 </p>
               </div>
             )}
