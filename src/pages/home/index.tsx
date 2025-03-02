@@ -63,6 +63,7 @@ export default function HomePage() {
               title: resource.name,
               description: resource.description,
               author: resource.ownerData?.data.username || "Unknown Author",
+              authorImage: resource.ownerData?.data.picture || "",
               version: resource.name.includes("v.")
                 ? resource.name.split("v.")[1]
                 : "",

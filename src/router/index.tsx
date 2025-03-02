@@ -4,6 +4,7 @@ import { useEffect } from "react";
 // Components and Layout
 import Layout from "@/layout";
 import HomePage from "@/pages/home";
+import BrowsePage from "@/pages/browse";
 import User_Settings from "@/pages/user/settings";
 import User_Content from "@/pages/user/content";
 import User_View from "@/pages/user/view";
@@ -60,6 +61,7 @@ const ExternalRedirect = ({ to }: { to: string }) => {
 const ROUTES: RouteConfig[] = [
   // Public Routes
   { path: "/", title: "Home", element: HomePage },
+  { path: "/browse", title: "Browse", element: BrowsePage },
 
   // User Routes
   {

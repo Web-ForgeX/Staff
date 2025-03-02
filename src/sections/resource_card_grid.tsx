@@ -6,12 +6,14 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
+import URLS from "@/Config/URLS";
 
 interface Resource {
   title: string;
   description?: string;
   id: string;
   author?: string;
+  authorImage?: string;
   version?: string;
   image: string;
 }
@@ -76,14 +78,12 @@ export default function SECTION_Resource_Card_Grid({
       </div>
 
       {!resources ? (
-        // Loading State
         <div className={`grid ${getGridCols(per_row)} gap-6`}>
           {[...Array(6)].map((_, index) => (
             <LoadingCard key={`loading-${index}`} />
           ))}
         </div>
       ) : resources.length === 0 ? (
-        // Empty State
         <Card className="w-full p-6 text-center">
           <CardHeader>
             <CardTitle className="text-xl text-muted-foreground">
@@ -93,7 +93,6 @@ export default function SECTION_Resource_Card_Grid({
           </CardHeader>
         </Card>
       ) : (
-        // Resource Grid
         <div className={`grid ${getGridCols(per_row)} gap-6`}>
           {resources.map((resource, index) => (
             <Card
@@ -122,7 +121,14 @@ export default function SECTION_Resource_Card_Grid({
                   )}
                 </CardHeader>
                 <CardFooter className="p-4 pt-2 mt-auto">
-                  <div className="flex items-center text-sm text-muted-foreground">
+                  <div className="flex items-center text-sm text-muted-foreground space-x-2">
+                    {resource.authorImage && (
+                      <img
+                        src={`${URLS.USER_AVATARS_BUCKET}/${resource.authorImage}`}
+                        alt={resource.author || "Author"}
+                        className="w-6 h-6 rounded-full"
+                      />
+                    )}
                     {resource.author && (
                       <span className="text-primary">{resource.author}</span>
                     )}
