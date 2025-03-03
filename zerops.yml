@@ -1,5 +1,5 @@
 zerops:
-  - setup: staff-web
+  - setup: staff
     build:
       base: bun@1.2
       buildCommands:
