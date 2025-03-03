@@ -29,6 +29,8 @@ export default function Navbar() {
             <span className="font-black text-primary duration-500 group-hover:animate-pulse">
               X
             </span>
+            {"  "}
+            <span className="font-black text-primary text-sm ml-1">Staff</span>
           </a>
 
           <div className="hidden md:block">
