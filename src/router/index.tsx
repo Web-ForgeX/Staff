@@ -14,6 +14,7 @@ import Resource_Edit from "@/pages/resources/edit";
 import Resource_View from "@/pages/resources/view";
 import Not_Found from "@/pages/404";
 import TOS from "@/pages/tos";
+import About_Page from "@/pages/about";
 import Privacy from "@/pages/privacy";
 import Signin from "@/pages/auth/signin";
 import Signup from "@/pages/auth/signup";
@@ -109,6 +110,7 @@ const ROUTES: RouteConfig[] = [
   },
 
   // Info Routes
+  { path: "/about", title: "About ForgeX", element: About_Page },
   { path: "/tos", title: "Terms Of Service", element: TOS },
   { path: "/privacy", title: "Privacy", element: Privacy },
 
