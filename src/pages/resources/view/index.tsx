@@ -695,21 +695,21 @@ export default function Resource_View(): React.ReactNode {
           </div>
         </div>
 
-        <div className="bg-primary/10 rounded-lg border border-primary p-6">
-          <div className="flex items-center mb-4">
-            <PaintBucket className="h-6 w-6 text-primary mr-2" />
-            <h2 className="text-xl font-bold text-primary">Customisation</h2>
-          </div>
+        {isOwner && (
+          <div className="bg-primary/10 rounded-lg border border-primary p-6">
+            <div className="flex items-center mb-4">
+              <PaintBucket className="h-6 w-6 text-primary mr-2" />
+              <h2 className="text-xl font-bold text-primary">Customisation</h2>
+            </div>
 
-          {isOwner && (
             <Button
               className="w-full md:w-auto"
               onClick={() => (window.location.href = `/resources/edit/${id}`)}
             >
               <Pencil /> Edit Resource
             </Button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Danger Zone - Only visible to resource owner */}
         {isOwner && (
