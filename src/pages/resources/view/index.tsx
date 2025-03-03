@@ -10,7 +10,9 @@ import {
   Info,
   FileText,
   ExternalLink,
-  MessageCircle,
+  Shield,
+  MessageSquare,
+  Globe,
   AlertTriangle,
   Trash2,
   Search,
@@ -408,77 +410,87 @@ export default function Resource_View(): React.ReactNode {
           </div>
         )}
 
-        {/* Requirements - Updated to use formatText for each requirement */}
-        {resource.requirements && resource.requirements.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Requirements</h2>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {resource.requirements.map((req, index) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-2 text-muted-foreground"
-                >
-                  <Info className="h-4 w-4 text-primary flex-shrink-0 mt-1" />
-                  <div>{formatText(req)}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {/* Support Information */}
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Support</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {resource.support_docs && (
               <div className="bg-card rounded-lg border p-4">
-                <FileText className="h-6 w-6 text-primary mb-2" />
-                <p className="font-medium">Documentation</p>
-                <a
-                  href={resource.support_docs}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center mt-1"
-                >
-                  View Documentation <ExternalLink className="h-3 w-3 ml-1" />
-                </a>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-6 w-6 text-primary" />
+                    <p className="font-medium">Documentation</p>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <a
+                      href={resource.support_docs}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
               </div>
             )}
-            {resource.support_website && (
-              <div className="bg-card rounded-lg border p-4">
-                <Info className="h-6 w-6 text-primary mb-2" />
-                <p className="font-medium">Website</p>
-                <a
-                  href={resource.support_website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center mt-1"
-                >
-                  Visit Website <ExternalLink className="h-3 w-3 ml-1" />
-                </a>
-              </div>
-            )}
+
             {resource.support_discord_server && (
               <div className="bg-card rounded-lg border p-4">
-                <MessageCircle className="h-6 w-6 text-primary mb-2" />
-                <p className="font-medium">Discord Support</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {formatText(resource.support_discord_server)}
-                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-6 w-6 text-primary" />
+                    <p className="font-medium">Discord Support</p>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <a
+                      href={resource.support_discord_server}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
               </div>
             )}
+
+            {resource.support_website && (
+              <div className="bg-card rounded-lg border p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-6 w-6 text-primary" />
+                    <p className="font-medium">Website Support</p>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <a
+                      href={resource.support_website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {resource.support_changelog && (
               <div className="bg-card rounded-lg border p-4">
-                <FileText className="h-6 w-6 text-primary mb-2" />
-                <p className="font-medium">Changelog</p>
-                <a
-                  href={resource.support_changelog}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center mt-1"
-                >
-                  View Changelog <ExternalLink className="h-3 w-3 ml-1" />
-                </a>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-6 w-6 text-primary" />
+                    <p className="font-medium">Updates</p>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <a
+                      href={resource.support_changelog}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
               </div>
             )}
           </div>
@@ -487,12 +499,14 @@ export default function Resource_View(): React.ReactNode {
 
       {/* Sidebar */}
       <div className="lg:col-span-1">
-        <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-6 sticky top-20">
-          {/* Price and Buttons */}
-          <div className="text-3xl font-bold mb-6">
-            ${resource.price.toFixed(2)}
+        <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-6 sticky top-8">
+          {/* Title and Price */}
+          <h1 className="text-2xl font-bold mb-2">{resource.name}</h1>
+          <div className="text-3xl font-bold mb-6 text-primary">
+            ${resource.price}
           </div>
 
+          {/* Action Buttons */}
           <div className="space-y-4">
             <Button className="w-full">Buy Now</Button>
           </div>
@@ -511,38 +525,45 @@ export default function Resource_View(): React.ReactNode {
             </div>
           </div>
 
-          {/* Creator - Only show if we have creator info */}
-          {creatorInfo && (
-            <div className="border-t mt-6 pt-6">
-              <div className="flex items-center">
-                {creatorInfo.picture ? (
-                  <img
-                    src={`${URLS.USER_AVATARS_BUCKET}/${creatorInfo.picture}`}
-                    alt={creatorInfo.username || "Creator"}
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
-                    <span className="text-primary font-bold">
-                      {(creatorInfo.username || "User").charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1">
-                  <div className="font-semibold">
-                    {creatorInfo.username || "Creator"}
-                  </div>
-                  {creatorInfo.verified && <VerifiedBadge />}
+          {/* Requirements */}
+          <div className="border-t mt-6 pt-6">
+            <h3 className="font-medium mb-3">Requirements</h3>
+            <ul className="space-y-2">
+              {resource.requirements.map((req, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-2 text-sm text-muted-foreground"
+                >
+                  <Info className="h-4 w-4 text-primary flex-shrink-0" />
+                  {req}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Creator */}
+          <div className="border-t mt-6 pt-6">
+            <div className="flex items-center">
+              <img
+                src={`${URLS.USER_AVATARS_BUCKET}/${creatorInfo?.picture}`}
+                alt={creatorInfo?.username}
+                className="w-10 h-10 rounded-full mr-3"
+              />
+              <div>
+                <div className="font-semibold flex items-center gap-1">
+                  {creatorInfo?.username}
+                  {creatorInfo?.verified && <VerifiedBadge className="w-4" />}
                 </div>
+
                 <Link
-                  to={`/user/view/${creatorInfo.username}`}
-                  className="text-primary hover:text-primary/90 transition-colors ml-2"
+                  to={`/user/view/${creatorInfo?.username}`}
+                  className="text-primary hover:text-primary/90 transition-colors"
                 >
                   View Profile
                 </Link>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
