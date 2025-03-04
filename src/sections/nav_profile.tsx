@@ -1,5 +1,6 @@
 import VerifiedBadge from "@/components/ui/verified";
 import { User } from "@supabase/supabase-js";
+import supabase from "@/API/supabase";
 
 import URLS from "@/Config/URLS";
 
@@ -13,9 +14,14 @@ export default function SECTION_Nav_Profile({ user }: { user: User }) {
           className="w-6 h-6 rounded-full"
         />
         <div className="flex items-center space-x-1">
-          <span className="text-sm font-medium">
+          <button
+            className="text-sm font-medium"
+            onClick={() => {
+              supabase.auth.signOut().then(() => window.location.reload());
+            }}
+          >
             {user?.user_metadata?.username}
-          </span>
+          </button>
           {user?.user_metadata?.verified && <VerifiedBadge className="w-3" />}
         </div>
       </div>

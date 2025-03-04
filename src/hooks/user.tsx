@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 import {
   createContext,
   useContext,
@@ -6,28 +5,49 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { User } from "@supabase/supabase-js";
+
 import { UserFetch } from "@/API/auth/functions";
 import { Navigate, useLocation } from "react-router-dom";
+import SendRequest from "@/API/request";
+import { User as SupabaseAuthUser } from "@supabase/auth-js";
 
-type AuthContextType = {
-  user: User | null;
+interface User extends SupabaseAuthUser {
+  name?: string; // Mark name as optional if it's not always present
+}
+
+interface AuthContextType {
+  user: User | undefined | null;
   loading: boolean;
+  rank: number | null;
   refreshUser: () => Promise<void>;
-};
+}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Provide a default value that matches the expected shape
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [rank, setRank] = useState<number | null>(null);
 
   const refreshUser = async () => {
     try {
       const userData = await UserFetch();
       setUser(userData);
+      if (userData) {
+        const response = await SendRequest({
+          method: "GET",
+          route: `/user/id/${userData.id}`,
+        });
+        if (!response.error) {
+          setRank(response.rank);
+        }
+      }
     } catch {
       setUser(null);
+      setRank(null);
     }
   };
 
@@ -36,7 +56,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, rank, refreshUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );
@@ -51,14 +71,14 @@ export function useAuth() {
 }
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, rank } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!user) {
+  if (!user || rank === null || rank <= 50) {
     return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
 

@@ -10,12 +10,6 @@ export default function SECTION_Auth_Buttons() {
       >
         Sign In
       </Button>
-      <Button
-        className="px-10"
-        onClick={() => (window.location.href = "/auth/signup")}
-      >
-        Sign Up
-      </Button>
     </div>
   );
 }

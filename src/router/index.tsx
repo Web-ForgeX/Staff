@@ -47,7 +47,7 @@ const ROUTES: RouteConfig[] = [
   { path: "/auth/signin", title: "Sign In", element: Signin },
 
   // Pages
-  { path: "/", title: "Dashboard", element: StaffDashboard },
+  { path: "/", title: "Dashboard", element: StaffDashboard, protected: true },
 
   // 404 Route - Keep last
   { path: "*", title: "Page Not Found", element: Not_Found },
