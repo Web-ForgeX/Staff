@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Download,
@@ -9,242 +10,349 @@ import {
   Ban,
   ArrowUpDown,
   Search,
-  Star,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import SendRequest from "@/API/request";
+import URLS from "@/Config/URLS";
+interface PendingResource {
+  id: string;
+  approved: boolean;
+  name: string;
+  description: string;
+  price: number;
+  created_at: string;
+  image_urls: string[];
+  owner: string;
+}
 
 const StaffDashboard = () => {
-  // This would come from your backend in a real application
-  const pendingResources = [
-    {
-      id: 1,
-      name: "Advanced RPG Quest System",
-      description:
-        "A comprehensive quest management system with branching dialogues",
-      submittedAt: "2024-03-14T10:30:00Z",
-      price: "$24.99",
-      category: "Scripts",
-      image:
-        "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&q=80&w=400&h=300",
-      store: {
-        name: "RPG Masters",
-        avatar:
-          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=50&h=50",
-        rating: 4.8,
-        totalSales: 1243,
-      },
-    },
-    {
-      id: 2,
-      name: "Medieval Weapon Pack",
-      description:
-        "High-quality 3D models of medieval weapons with PBR textures",
-      submittedAt: "2024-03-14T09:15:00Z",
-      price: "$34.99",
-      category: "3D Models",
-      image:
-        "https://images.unsplash.com/photo-1590967596725-5462dfcd8b57?auto=format&fit=crop&q=80&w=400&h=300",
-      store: {
-        name: "Asset Forge",
-        avatar:
-          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=50&h=50",
-        rating: 4.9,
-        totalSales: 2156,
-      },
-    },
-    {
-      id: 3,
-      name: "Advanced Vehicle Physics",
-      description: "Realistic vehicle physics system for racing games",
-      submittedAt: "2024-03-14T08:45:00Z",
-      price: "$49.99",
-      category: "Physics",
-      image:
-        "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&q=80&w=400&h=300",
-      store: {
-        name: "GamePhysics Pro",
-        avatar:
-          "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=50&h=50",
-        rating: 4.7,
-        totalSales: 892,
-      },
-    },
-  ];
+  const [pendingResources, setPendingResources] = useState<PendingResource[]>(
+    [],
+  );
+  const [stats, setStats] = useState({
+    approved: 0,
+    pending: 0,
+    rejected: 0,
+    todayNew: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const stats = {
-    pending: 24,
-    approved: 156,
-    rejected: 12,
-    todayNew: 8,
+  // State for deny dialog
+  const [denyDialogOpen, setDenyDialogOpen] = useState(false);
+  const [selectedResourceId, setSelectedResourceId] = useState<string | null>(
+    null,
+  );
+  const [denyReason, setDenyReason] = useState("");
+
+  const fetchData = async () => {
+    try {
+      // Fetch pending resources
+      const pendingResourcesResponse = await SendRequest({
+        route: "/resource/admin/pending",
+      });
+
+      // Fetch stats
+      const statsResponse = await SendRequest({
+        route: "/resource/admin/stats",
+      });
+
+      if (pendingResourcesResponse.error) {
+        throw new Error(pendingResourcesResponse.error);
+      }
+
+      if (statsResponse.error) {
+        throw new Error(statsResponse.error);
+      }
+
+      // Calculate today's new resources (simple approximation)
+      const todayResources = pendingResourcesResponse.data.filter(
+        (resource: PendingResource) => {
+          const resourceDate = new Date(resource.created_at);
+          const today = new Date();
+          return resourceDate.toDateString() === today.toDateString();
+        },
+      );
+
+      // Update to use the data from the nested data property
+      setPendingResources(pendingResourcesResponse.data || []);
+      setStats({
+        approved: statsResponse.data?.approved_count || 0,
+        pending: pendingResourcesResponse.data?.length || 0,
+        // Placeholder values - replace with actual backend data if available
+        rejected: 0,
+        todayNew: todayResources.length,
+      });
+      setLoading(false);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred",
+      );
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleApprove = async (resourceId: string) => {
+    try {
+      const response = await SendRequest({
+        method: "PATCH",
+        route: "/resource/admin/approval",
+        body: {
+          id: resourceId,
+          approved: true,
+          // Added optional denyReason as an empty string to match backend expectation
+          denyReason: "",
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      // Refresh data after approval
+      await fetchData();
+    } catch (err) {
+      console.error("Approval failed:", err);
+      setError(err instanceof Error ? err.message : "Approval failed");
+    }
+  };
+
+  const handleDeny = async () => {
+    if (!selectedResourceId) return;
+
+    try {
+      const response = await SendRequest({
+        method: "PATCH",
+        route: "/resource/admin/approval",
+        body: {
+          id: selectedResourceId,
+          approved: false,
+          denyReason: denyReason || "No reason provided",
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      // Close dialog and reset state
+      setDenyDialogOpen(false);
+      setSelectedResourceId(null);
+      setDenyReason("");
+
+      // Refresh data after denial
+      await fetchData();
+    } catch (err) {
+      console.error("Denial failed:", err);
+      setError(err instanceof Error ? err.message : "Denial failed");
+    }
+  };
+
+  const openDenyDialog = (resourceId: string) => {
+    setSelectedResourceId(resourceId);
+    setDenyDialogOpen(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col gap-8">
-          {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold">Staff Dashboard</h1>
-            <p className="text-muted-foreground mt-2">
-              Review and manage submitted resources
-            </p>
-          </div>
+    <>
+      <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col gap-8">
+            {/* Header */}
+            <div>
+              <h1 className="text-3xl font-bold">Staff Dashboard</h1>
+              <p className="text-muted-foreground mt-2">
+                Review and manage submitted resources
+              </p>
+            </div>
 
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary/10 p-3 rounded-full">
-                  <Clock className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    Pending Review
-                  </p>
-                  <p className="text-2xl font-bold">{stats.pending}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
-              <div className="flex items-center gap-4">
-                <div className="bg-green-500/10 p-3 rounded-full">
-                  <FileCheck className="h-6 w-6 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Approved</p>
-                  <p className="text-2xl font-bold">{stats.approved}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
-              <div className="flex items-center gap-4">
-                <div className="bg-red-500/10 p-3 rounded-full">
-                  <Ban className="h-6 w-6 text-red-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Rejected</p>
-                  <p className="text-2xl font-bold">{stats.rejected}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
-              <div className="flex items-center gap-4">
-                <div className="bg-blue-500/10 p-3 rounded-full">
-                  <AlertCircle className="h-6 w-6 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">New Today</p>
-                  <p className="text-2xl font-bold">{stats.todayNew}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Search and Filters */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-              <Input placeholder="Search resources..." className="pl-10" />
-            </div>
-            <Button variant="outline">
-              <ArrowUpDown className="mr-2 h-4 w-4" />
-              Sort by Date
-            </Button>
-          </div>
-
-          {/* Pending Resources List */}
-          <div className="space-y-4">
-            {pendingResources.map((resource) => (
-              <div
-                key={resource.id}
-                className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-6"
-              >
-                <div className="flex flex-col md:flex-row gap-6">
-                  {/* Resource Image */}
-                  <div className="w-full md:w-48 h-36">
-                    <img
-                      src={resource.image}
-                      alt={resource.name}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Clock className="h-6 w-6 text-primary" />
                   </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Pending Review
+                    </p>
+                    <p className="text-2xl font-bold">{stats.pending}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-green-500/10 p-3 rounded-full">
+                    <FileCheck className="h-6 w-6 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Approved</p>
+                    <p className="text-2xl font-bold">{stats.approved}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-red-500/10 p-3 rounded-full">
+                    <Ban className="h-6 w-6 text-red-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Rejected</p>
+                    <p className="text-2xl font-bold">{stats.rejected}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-blue-500/10 p-3 rounded-full">
+                    <AlertCircle className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">New Today</p>
+                    <p className="text-2xl font-bold">{stats.todayNew}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                  {/* Resource Details */}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="text-xl font-bold">{resource.name}</h3>
-                        <p className="text-muted-foreground mt-1">
-                          {resource.description}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-primary">
-                          {resource.price}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {resource.category}
-                        </p>
-                      </div>
+            {/* Rest of the previous implementation remains the same */}
+
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                <Input placeholder="Search resources..." className="pl-10" />
+              </div>
+              <Button variant="outline">
+                <ArrowUpDown className="mr-2 h-4 w-4" />
+                Sort by Date
+              </Button>
+            </div>
+
+            {/* Pending Resources List */}
+            <div className="space-y-4">
+              {pendingResources.map((resource) => (
+                <div
+                  key={resource.id}
+                  className="bg-gradient-to-br from-card to-accent/20 rounded-lg border p-6"
+                >
+                  {/* Previous resource card implementation */}
+                  <div className="flex flex-col md:flex-row gap-6">
+                    {/* Resource Image */}
+                    <div className="w-full md:w-48 h-36">
+                      <img
+                        src={`${URLS.RESOURCES_IMGS_BUCKET}/${resource.image_urls[0]}`} // Use first image
+                        alt={resource.name}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
                     </div>
 
-                    {/* Store Info */}
-                    <div className="flex items-center mt-4">
-                      <img
-                        src={resource.store.avatar}
-                        alt={resource.store.name}
-                        className="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div>
-                        <p className="font-medium">{resource.store.name}</p>
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                            {resource.store.rating}
-                          </div>
-                          <span>•</span>
-                          <span>
-                            {resource.store.totalSales.toLocaleString()} sales
-                          </span>
+                    {/* Resource Details */}
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-xl font-bold">{resource.name}</h3>
+                          <p className="text-muted-foreground mt-1">
+                            {resource.description || "No description provided"}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-primary">
+                            ${resource.price.toFixed(2)}
+                          </p>
                         </div>
                       </div>
+
+                      {/* Submission Time */}
+                      <p className="text-sm text-muted-foreground mt-4">
+                        Submitted{" "}
+                        {new Date(resource.created_at).toLocaleString()}
+                      </p>
                     </div>
 
-                    {/* Submission Time */}
-                    <p className="text-sm text-muted-foreground mt-4">
-                      Submitted{" "}
-                      {new Date(resource.submittedAt).toLocaleString()}
-                    </p>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex md:flex-col gap-2 md:w-32">
-                    <Button variant="outline" className="flex-1">
-                      <Download className="mr-2 h-4 w-4" />
-                      Download
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 text-green-500 hover:text-green-600"
-                    >
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Accept
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 text-red-500 hover:text-red-600"
-                    >
-                      <XCircle className="mr-2 h-4 w-4" />
-                      Deny
-                    </Button>
+                    {/* Action Buttons */}
+                    <div className="flex md:flex-col gap-2 md:w-32">
+                      <Button variant="outline" className="flex-1">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-green-500 hover:text-green-600"
+                        onClick={() => handleApprove(resource.id)}
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        Accept
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-red-500 hover:text-red-600"
+                        onClick={() => openDenyDialog(resource.id)}
+                      >
+                        <XCircle className="mr-2 h-4 w-4" />
+                        Deny
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Deny Reason Dialog */}
+      <Dialog open={denyDialogOpen} onOpenChange={setDenyDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deny Resource</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for denying this resource
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            placeholder="Enter reason for denial (optional)"
+            value={denyReason}
+            onChange={(e) => setDenyReason(e.target.value)}
+          />
+          <DialogFooter>
+            <Button variant="destructive" onClick={handleDeny}>
+              Confirm Denial
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
