@@ -106,16 +106,14 @@ const StaffDashboard = () => {
   }, []);
 
   const handleApprove = async (resourceId: string) => {
+    const data = new FormData();
+    data.append("id", resourceId);
+    data.append("approved", "true");
     try {
       const response = await SendRequest({
         method: "PATCH",
         route: "/resource/admin/approval",
-        body: {
-          id: resourceId,
-          approved: true,
-          // Added optional denyReason as an empty string to match backend expectation
-          denyReason: "",
-        },
+        body: data,
       });
 
       if (response.error) {
@@ -132,16 +130,16 @@ const StaffDashboard = () => {
 
   const handleDeny = async () => {
     if (!selectedResourceId) return;
+    const data = new FormData();
+    data.append("id", selectedResourceId);
+    data.append("approved", "true");
+    data.append("denyReason", denyReason || "No reason provided");
 
     try {
       const response = await SendRequest({
         method: "PATCH",
         route: "/resource/admin/approval",
-        body: {
-          id: selectedResourceId,
-          approved: false,
-          denyReason: denyReason || "No reason provided",
-        },
+        body: data,
       });
 
       if (response.error) {
