@@ -105,6 +105,24 @@ const StaffDashboard = () => {
     fetchData();
   }, []);
 
+  const handleDownload = async (resourceId: string) => {
+    try {
+      const response = await SendRequest({
+        method: "GET",
+        route: `/resource/id/${resourceId}/download`,
+      });
+
+      if (response.error || !response.data?.url) {
+        throw new Error(response.error || "Download URL not found");
+      }
+
+      window.open(response.data.url, "_blank");
+    } catch (err) {
+      console.error("Download failed:", err);
+      setError(err instanceof Error ? err.message : "Download failed");
+    }
+  };
+
   const handleApprove = async (resourceId: string) => {
     const data = new FormData();
     data.append("id", resourceId);
@@ -300,7 +318,11 @@ const StaffDashboard = () => {
 
                     {/* Action Buttons */}
                     <div className="flex md:flex-col gap-2 md:w-32">
-                      <Button variant="outline" className="flex-1">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => handleDownload(resource.id)}
+                      >
                         <Download className="mr-2 h-4 w-4" />
                         Download
                       </Button>
