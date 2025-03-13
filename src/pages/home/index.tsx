@@ -124,14 +124,11 @@ const StaffDashboard = () => {
   };
 
   const handleApprove = async (resourceId: string) => {
-    const data = new FormData();
-    data.append("id", resourceId);
-    data.append("approved", "true");
     try {
       const response = await SendRequest({
         method: "PATCH",
         route: "/resource/admin/approval",
-        body: data,
+        body: { id: resourceId, approved: true },
       });
 
       if (response.error) {
@@ -157,7 +154,7 @@ const StaffDashboard = () => {
       const response = await SendRequest({
         method: "PATCH",
         route: "/resource/admin/approval",
-        body: data,
+        body: { id: selectedResourceId, approved: false, denyReason },
       });
 
       if (response.error) {
